@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ShoeController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -30,4 +31,12 @@ Route::group(['prefix' => '/admins'], function () {
     Route::post('/register', [AdminController::class, 'register']);
     Route::post('/login', [AdminController::class, 'login']);
     Route::delete('/logout', [AdminController::class, 'logout'])->middleware('auth:sanctum');
+});
+
+Route::group(['prefix' => 'shoe', 'middleware' => 'auth:sanctum'], function () {
+    Route::post('/add', [ShoeController::class, 'addShoe']);
+    Route::put('/update/{id}', [ShoeController::class, 'updateShoe']);
+    Route::delete('/delete/{id}', [ShoeController::class, 'deleteShoe']);
+    Route::get('/getall', [ShoeController::class, 'getShoes']);
+    Route::get('/get/{id}', [ShoeController::class, 'getShoe']);
 });
