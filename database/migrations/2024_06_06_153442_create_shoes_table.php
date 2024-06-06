@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('shoes', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('addons');
-            $table->string('notes');
-            $table->string('price');
+            $table->string('addons')->nullable();
+            $table->string('notes')->nullable();
+            $table->integer('price');
+            $table->unsignedBigInteger('order_id');
             $table->timestamps();
         });
     }
