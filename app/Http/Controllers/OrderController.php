@@ -12,14 +12,18 @@ class OrderController extends Controller
     {
         $user = auth()->user();
         $validated = $request->validated();
+        $date = date('YmdHis');
+        $nomor_pemesanan = $user->id. $date;
 
         $order = Order::create([
+            'order_number' => $nomor_pemesanan,
             'address' => $validated['address'],
             'phone' => $validated['phone'],
             'total_price' => $validated['total_price'],
             'pickup_date' => $validated['pickup_date'],
             'notes' => $validated['notes'] ?? null,
             'user_id' => $user->id, // Adjust accordingly
+            
         ]);
 
         return response()->json([

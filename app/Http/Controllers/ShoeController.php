@@ -20,6 +20,7 @@ class ShoeController extends Controller
             'notes' => $validated['notes'] ?? null,
             'price' => $validated['price'],
             'order_id' => $request->order_id,
+            
         ]);
 
         return response()->json([

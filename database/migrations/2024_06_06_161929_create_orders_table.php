@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
+            $table->string('order_number');
             $table->string('address');
             $table->integer('phone');
             $table->integer('total_price');
             $table->datetime('pickup_date');
             $table->string('notes')->nullable();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('shoes_id');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
@@ -32,7 +32,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->dropForeign(['user_id', 'shoes_id']);
+            $table->dropForeign(['user_id']);
         });
         Schema::dropIfExists('orders');
     }
