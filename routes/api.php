@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ShoeController;
+use App\Http\Controllers\OrderController;
+
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -39,4 +41,16 @@ Route::group(['prefix' => 'shoe', 'middleware' => 'auth:sanctum'], function () {
     Route::delete('/delete/{id}', [ShoeController::class, 'deleteShoe']);
     Route::get('/getall', [ShoeController::class, 'getShoes']);
     Route::get('/get/{id}', [ShoeController::class, 'getShoe']);
+});
+
+Route::group(['prefix' => 'order', 'middleware' => 'auth:sanctum'], function () {
+    Route::post('/add', [OrderController::class, 'addOrder']);
+    Route::put('/update', [OrderController::class, 'updateOrder']);
+    Route::delete('/delete/{id}', [OrderController::class, 'deleteOrder']);
+    Route::get('/get', [OrderController::class, 'getOrders']);
+    Route::get('/get/{id}', [OrderController::class, 'getOrder']);
+
+
+
+
 });

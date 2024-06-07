@@ -4,20 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AddShoeRequest;
 use App\Models\Shoe;
+use App\Models\Order; // Import the Order model
 use Illuminate\Http\Request;
 
 class ShoeController extends Controller
 {
     public function addShoe(AddShoeRequest $request)
     {
-        
         $validated = $request->validated();
+
 
         $shoe = Shoe::create([
             'name' => $validated['name'],
             'addons' => $validated['addons'] ?? null,
             'notes' => $validated['notes'] ?? null,
             'price' => $validated['price'],
+            'order_id' => $request->order_id,
         ]);
 
         return response()->json([
@@ -34,6 +36,7 @@ class ShoeController extends Controller
             'addons' => 'sometimes|nullable|string|max:255',
             'notes' => 'sometimes|nullable|string|max:255',
             'price' => 'sometimes|required|numeric',
+            'order_id' => 'sometimes|required|integer|exists:orders,id',
         ]);
 
         $shoe = Shoe::find($validated['id']);
@@ -96,4 +99,5 @@ class ShoeController extends Controller
             'data' => $shoe,
         ], 200);
     }
+
 }

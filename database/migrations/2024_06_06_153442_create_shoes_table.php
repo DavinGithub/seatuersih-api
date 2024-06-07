@@ -19,6 +19,8 @@ return new class extends Migration
             $table->integer('price');
             $table->unsignedBigInteger('order_id');
             $table->timestamps();
+
+            $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
         });
     }
 
@@ -27,6 +29,9 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('shoes', function (Blueprint $table) {
+            $table->dropForeign(['order_id']);
+        });
         Schema::dropIfExists('shoes');
     }
 };
