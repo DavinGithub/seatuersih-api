@@ -10,6 +10,7 @@ class OrderController extends Controller
 {
     public function addOrder(AddOrderRequest $request)
     {
+        $user = auth()->user();
         $validated = $request->validated();
 
         $order = Order::create([
@@ -18,8 +19,7 @@ class OrderController extends Controller
             'total_price' => $validated['total_price'],
             'pickup_date' => $validated['pickup_date'],
             'notes' => $validated['notes'] ?? null,
-            'user_id' => $validated['user_id'], // Adjust accordingly
-            'shoes_id' => $validated['shoes_id'], // Adjust accordingly
+            'user_id' => $user->id, // Adjust accordingly
         ]);
 
         return response()->json([
@@ -37,8 +37,6 @@ class OrderController extends Controller
             'total_price' => 'sometimes|required|numeric',
             'pickup_date' => 'sometimes|required|date',
             'notes' => 'sometimes|nullable|string|max:255',
-            'user_id' => 'sometimes|required|integer|exists:users,id', // Adjust accordingly
-            'shoes_id' => 'sometimes|required|integer|exists:shoes,id', // Adjust accordingly
         ]);
 
         $order = Order::find($validated['id']);

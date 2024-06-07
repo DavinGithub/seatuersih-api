@@ -30,7 +30,6 @@ class AddOrderRequest extends FormRequest
             'pickup_date' => 'required|date',
             'notes' => 'nullable|string|max:255',
             'user_id' => 'required|integer|exists:users,id',
-            'shoes_id' => 'required|integer|exists:shoes,id',
         ];
     }
 }
