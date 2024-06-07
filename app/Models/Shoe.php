@@ -14,5 +14,12 @@ class Shoe extends Model
         'addons',
         'notes',
         'price',
+        'order_id',
     ];
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class);
+    }
 }
+
