@@ -1,10 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\LoginRequests;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -13,32 +15,29 @@ class UserController extends Controller
     {
         $request->validated();
 
-        if ($request->email == User::where('email', $request->email)->first()) {
-            return response([
-                'message' => 'Email already exists',
-            ], 409);
-        } elseif ($request->phone == User::where('phone', $request->phone)->first()) {
-            return response([
-                'message' => 'Phone already exists',
-            ], 409);
-        }
-
         $userdata = [
             'username' => $request->username,
             'email' => $request->email,
             'phone' => $request->phone,
             'password' => Hash::make($request->password),
         ];
-        $user = User::create($userdata);    
+
+        if ($request->hasFile('profile_picture')) {
+            $path = $request->file('profile_picture')->store('profile_pictures');
+            $userdata['profile_picture'] = $path;
+        }
+
+        $user = User::create($userdata);
         $token = $user->createToken('seatuersih')->plainTextToken;
 
         return response([
-            'user' => $user,    
+            'user' => $user,
             'token' => $token,
         ], 201);
     }
 
-    public function login (LoginRequests $request) {
+    public function login(LoginRequests $request)
+    {
         $request->validated();
 
         $user = User::where('email', $request->email)->first();
@@ -56,14 +55,16 @@ class UserController extends Controller
             'token' => $token,
         ], 200);
     }
-        
-    public function details() {
+
+    public function details()
+    {
         return response([
             'user' => auth()->user(),
         ], 200);
     }
 
-    public function logout() {
+    public function logout()
+    {
         $user = User::where('email', auth()->user()->email)->first();
         $user->tokens()->delete();
         return response([
@@ -71,9 +72,8 @@ class UserController extends Controller
         ], 200);
     }
 
-    // Update Profile
-
-    public function updateUsername(Request $request) {
+    public function updateUsername(Request $request)
+    {
         $request->validate([
             'username' => 'required|string|max:255',
         ]);
@@ -92,8 +92,9 @@ class UserController extends Controller
             'user' => $user,
         ], 200);
     }
-   
-    public function updateEmail(Request $request) {
+
+    public function updateEmail(Request $request)
+    {
         $request->validate([
             'email' => 'required|string|email|max:255|unique:users',
         ]);
@@ -103,10 +104,10 @@ class UserController extends Controller
             return response([
                 'message' => 'Email Cannot be the same as the previous one',
             ], 409);
-        } elseif ($request->email == User::where('email', $request->email)->first()) {
+        } elseif (User::where('email', $request->email)->exists()) {
             return response([
                 'message' => 'Email already exists',
-            ], 409);    
+            ], 409);
         }
         $user->email = $request->email;
         $user->save();
@@ -117,7 +118,8 @@ class UserController extends Controller
         ], 200);
     }
 
-    public function updatePhone(Request $request) {
+    public function updatePhone(Request $request)
+    {
         $request->validate([
             'phone' => 'required|string|max:255|unique:users',
         ]);
@@ -127,7 +129,7 @@ class UserController extends Controller
             return response([
                 'message' => 'Phone Cannot be the same as the previous one',
             ], 409);
-        } elseif ($request->phone == User::where('phone', $request->phone)->first()) {
+        } elseif (User::where('phone', $request->phone)->exists()) {
             return response([
                 'message' => 'Phone already exists',
             ], 409);
@@ -141,7 +143,8 @@ class UserController extends Controller
         ], 200);
     }
 
-    public function updatePassword(Request $request) {
+    public function updatePassword(Request $request)
+    {
         $request->validate([
             'password' => 'required|string|min:8',
         ]);
@@ -156,4 +159,32 @@ class UserController extends Controller
         ], 200);
     }
 
-}   
+    public function updateProfilePicture(Request $request)
+    {
+        $request->validate([
+            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $user = User::where('id', auth()->user()->id)->first(); 
+
+        if ($request->hasFile('profile_picture')) {
+            if ($user->profile_picture) {
+                Storage::delete($user->profile_picture);
+                
+            }
+
+            $path = $request->file('profile_picture')->store('profile_pictures');
+            $user->profile_picture = $path;
+            $user->save();
+
+            return response([
+                'message' => 'Profile picture updated',
+                'user' => $user,
+            ], 200);
+        } else {
+            return response([
+                'message' => 'No profile picture uploaded',
+            ], 400);
+        }
+    }
+}
