@@ -11,18 +11,17 @@ class OrderController extends Controller
     public function addOrder(AddOrderRequest $request)
     {
         $user = auth()->user();
-        $validated = $request->validated();
         $date = date('YmdHis');
         $nomor_pemesanan = $user->id. $date;
 
         $order = Order::create([
             'order_number' => $nomor_pemesanan,
-            'address' => $validated['address'],
-            'phone' => $validated['phone'],
-            'total_price' => $validated['total_price'],
-            'pickup_date' => $validated['pickup_date'],
-            'notes' => $validated['notes'] ?? null,
-            'user_id' => $user->id, // Adjust accordingly
+            'address' => $request->address,
+            'phone' => $request->phone,
+            'total_price' => $request->total_price,
+            'pickup_date' => $request->pickup_date,
+            'notes' => $request->notes,
+            'user_id' => $user->id, 
             
         ]);
 
@@ -34,7 +33,7 @@ class OrderController extends Controller
 
     public function updateOrder(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'id' => 'required|integer|exists:orders,id',
             'address' => 'sometimes|required|string|max:255',
             'phone' => 'sometimes|required|integer',
@@ -43,14 +42,14 @@ class OrderController extends Controller
             'notes' => 'sometimes|nullable|string|max:255',
         ]);
 
-        $order = Order::find($validated['id']);
+        $order = Order::find($request['id']);
         if (!$order) {
             return response()->json([
                 'message' => 'Order not found',
             ], 404);
         }
 
-        $order->update($validated);
+        $order->update($request);
 
         return response()->json([
             'message' => 'Order updated successfully',
