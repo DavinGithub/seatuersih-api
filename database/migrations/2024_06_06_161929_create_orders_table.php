@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('order_number');
             $table->string('address');
-            $table->integer('phone');
+            $table->string('phone');
             $table->integer('total_price');
             $table->datetime('pickup_date');
             $table->string('notes')->nullable();
