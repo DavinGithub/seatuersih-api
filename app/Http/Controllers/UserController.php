@@ -187,4 +187,23 @@ class UserController extends Controller
             ], 400);
         }
     }
+
+    public function updateUser(Request $request) {
+        $request->validate([
+            'username' => 'required|string',
+            'email' => 'required|string|email',
+            'phone' => 'required|string',
+        ]);
+
+        $user = User::where('id', auth()->user()->id)->first();
+        $user->username = $request->username;
+        $user->email = $request->email;
+        $user->phone = $request->phone;
+        $user->save();
+        return response([
+            'status' => 'success',
+            'message' => 'Change user detail successfully',
+            'user' => $user,
+        ], 200);
+    }
 }

@@ -30,6 +30,7 @@ Route::group(['prefix' => 'users'], function () {
         Route::post('/phone', [UserController::class, 'updatePhone']);
         Route::post('/password', [UserController::class, 'updatePassword']);
         Route::post('/profile-picture', [UserController::class, 'updateProfilePicture']);
+        Route::post('/all', [UserController::class, 'updateUser']);
     });
 });
 
