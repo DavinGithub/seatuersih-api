@@ -170,11 +170,12 @@ class UserController extends Controller
         if ($request->hasFile('profile_picture')) {
             if ($user->profile_picture) {
                 Storage::delete($user->profile_picture);
-                
             }
 
-            $path = $request->file('profile_picture')->store('profile_pictures');
-            $user->profile_picture = $path;
+            $image = $request->file('profile_picture');
+            $imageName = time() . '.' . $image->extension();
+            $image->move(storage_path('/app/profile_pictures/'), $imageName);
+            $user->profile_picture = $imageName;
             $user->save();
 
             return response([
