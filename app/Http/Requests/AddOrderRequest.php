@@ -24,6 +24,7 @@ class AddOrderRequest extends FormRequest
     public function rules()
     {
         return [
+            'order_type' => 'required|string|in:regular_clean,deep_clean',
             'address' => 'required|string|max:255',
             'phone' => 'required|string|max:255',
             'total_price' => 'nullable|numeric',
