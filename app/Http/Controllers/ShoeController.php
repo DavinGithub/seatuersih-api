@@ -20,7 +20,7 @@ class ShoeController extends Controller
             'notes' =>  $request-> notes,
             'price' => $request -> price,
             'order_id' => $request->order_id,
-            
+
         ]);
 
         return response()->json([
@@ -71,9 +71,12 @@ class ShoeController extends Controller
         ], 200);
     }
 
-    public function getShoes()
+    public function getShoes(Request $request)
     {
-        $shoes = Shoe::all();
+        $request->validate([
+            'order_id' => 'sometimes|required|integer|exists:orders,id',
+        ]);
+        $shoes = Shoe::where('order_id', $request->order_id)->get();
         if ($shoes->isEmpty()) {
             return response()->json([
                 'message' => 'No shoes found',
