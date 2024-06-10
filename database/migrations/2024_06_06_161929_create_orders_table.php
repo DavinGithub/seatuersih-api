@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
+            $table->enum('order_type', ['regular_clean', 'deep_clean'])->default('regular_clean');
             $table->string('order_number');
             $table->string('address');
             $table->string('phone');

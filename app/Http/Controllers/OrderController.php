@@ -15,14 +15,15 @@ class OrderController extends Controller
         $nomor_pemesanan = $user->id. $date;
 
         $order = Order::create([
+            'order_type' => $request->order_type,
             'order_number' => $nomor_pemesanan,
             'address' => $request->address,
             'phone' => $request->phone,
             'total_price' => $request->total_price,
             'pickup_date' => $request->pickup_date,
             'notes' => $request->notes,
-            'user_id' => $user->id, 
-            
+            'user_id' => $user->id,
+
         ]);
 
         return response()->json([
