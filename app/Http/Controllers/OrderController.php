@@ -76,7 +76,8 @@ class OrderController extends Controller
 
     public function getOrders()
     {
-        $orders = Order::all();
+        $user = auth()->user();
+        $orders = Order::where('user_id', $user->id)->get();
         if ($orders->isEmpty()) {
             return response()->json([
                 'message' => 'No orders found',
