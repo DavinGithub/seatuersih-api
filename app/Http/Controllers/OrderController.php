@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AddOrderRequest;
 use App\Models\Order;
+use App\Models\Shoe;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -103,5 +104,29 @@ class OrderController extends Controller
             'message' => 'Order details',
             'data' => $order,
         ], 200);
+    }
+
+    public function checkout(Request $request)
+    {
+        $request->validate([
+            'order_id' => 'required|integer|exists:orders,id',
+        ]);
+
+        $order = Order::where('id', $request->order_id)->first();
+        $shoes = Shoe::where('order_id', $request->order_id)->get();
+        if ($shoes->isEmpty()) {
+            return response()->json([
+                'message' => 'No shoes found',
+            ], 200);
+        }
+
+        $totalPrice = $shoes->sum('price');
+        $order->total_price = $totalPrice;
+        $order->save();
+
+        return response([
+            'message' => 'Checkout success',
+            'order' => $order,
+        ]);
     }
 }

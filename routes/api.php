@@ -54,6 +54,7 @@ Route::group(['prefix' => 'order', 'middleware' => 'auth:sanctum'], function () 
     Route::delete('/delete/{id}', [OrderController::class, 'deleteOrder']);
     Route::get('/get', [OrderController::class, 'getOrders']);
     Route::get('/get/{id}', [OrderController::class, 'getOrder']);
+    Route::post('/checkout', [OrderController::class, 'checkout']);
 
 
 
