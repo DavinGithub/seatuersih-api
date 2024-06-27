@@ -18,7 +18,6 @@ class AddShoeRequest extends FormRequest
             'addons' => 'nullable|string|max:255',
             'notes' => 'nullable|string|max:255',
             'price' => 'required|numeric',
-            // 'order_id' => 'required|integer|exists:orders,id', // Remove this line
         ];
     }
 

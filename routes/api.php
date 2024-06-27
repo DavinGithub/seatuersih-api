@@ -8,6 +8,8 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ShoeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OtpController;
+use App\Http\Controllers\ReviewController;
+
 
 
 // Route::get('/user', function (Request $request) {
@@ -55,8 +57,7 @@ Route::group(['prefix' => 'order', 'middleware' => 'auth:sanctum'], function () 
     Route::get('/get', [OrderController::class, 'getOrders']);
     Route::get('/get/{id}', [OrderController::class, 'getOrder']);
     Route::post('/checkout', [OrderController::class, 'checkout']);
-
-
-
-
+});
+Route::group(['prefix' => 'review', 'middleware' => 'auth:sanctum'], function () {
+    Route::post('/add', [ReviewController::class, 'addReview']);
 });
