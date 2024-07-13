@@ -44,7 +44,7 @@ Route::group(['prefix' => '/admins'], function () {
 
 Route::group(['prefix' => 'shoe', 'middleware' => 'auth:sanctum'], function () {
     Route::post('/add', [ShoeController::class, 'addShoe']);
-    Route::put('/update/{id}', [ShoeController::class, 'updateShoe']);
+    Route::post('/update/{id}', [ShoeController::class, 'updateShoe']);
     Route::delete('/delete/{id}', [ShoeController::class, 'deleteShoe']);
     Route::post('/getall', [ShoeController::class, 'getShoes']);
     Route::get('/get/{id}', [ShoeController::class, 'getShoe']);
@@ -52,7 +52,7 @@ Route::group(['prefix' => 'shoe', 'middleware' => 'auth:sanctum'], function () {
 
 Route::group(['prefix' => 'order', 'middleware' => 'auth:sanctum'], function () {
     Route::post('/add', [OrderController::class, 'addOrder']);
-    Route::put('/update', [OrderController::class, 'updateOrder']);
+    Route::post('/update', [OrderController::class, 'updateOrder']);
     Route::delete('/delete/{id}', [OrderController::class, 'deleteOrder']);
     Route::get('/get', [OrderController::class, 'getOrders']);
     Route::get('/get/{id}', [OrderController::class, 'getOrder']);

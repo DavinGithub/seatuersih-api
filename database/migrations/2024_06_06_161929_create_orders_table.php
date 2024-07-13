@@ -17,10 +17,17 @@ return new class extends Migration
             $table->string('order_number');
             $table->string('address');
             $table->string('phone');
-            $table->integer('total_price');
+            $table->integer('total_price')->nullable();
             $table->datetime('pickup_date');
             $table->string('notes')->nullable();
             $table->unsignedBigInteger('user_id');
+            $table->enum('order_status', [
+                'pending', 
+                'driver on the way to location', 
+                'shoe being cleaned', 
+                'completed', 
+                'decline'
+            ]);
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
