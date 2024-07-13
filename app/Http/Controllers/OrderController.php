@@ -13,7 +13,7 @@ class OrderController extends Controller
     {
         $user = auth()->user();
         $date = date('YmdHis');
-        $nomor_pemesanan = $user->id. $date;
+        $nomor_pemesanan = $user->id . $date;
 
         $order = Order::create([
             'order_type' => $request->order_type,
@@ -23,8 +23,8 @@ class OrderController extends Controller
             'total_price' => $request->total_price,
             'pickup_date' => $request->pickup_date,
             'notes' => $request->notes,
+            'order_status' => $request->order_status,
             'user_id' => $user->id,
-
         ]);
 
         return response()->json([
@@ -38,10 +38,11 @@ class OrderController extends Controller
         $request->validate([
             'id' => 'required|integer|exists:orders,id',
             'address' => 'sometimes|required|string|max:255',
-            'phone' => 'sometimes|required|integer',
+            'phone' => 'sometimes|required|string|max:255',
             'total_price' => 'sometimes|required|numeric',
             'pickup_date' => 'sometimes|required|date',
             'notes' => 'sometimes|nullable|string|max:255',
+            'order_status' => 'sometimes|nullable|string|in:pending,driver on the way to location,shoe being cleaned,completed,decline',
         ]);
 
         $order = Order::find($request['id']);
@@ -51,7 +52,14 @@ class OrderController extends Controller
             ], 404);
         }
 
-        $order->update($request);
+        $order->update($request->only([
+            'address', 
+            'phone', 
+            'total_price', 
+            'pickup_date', 
+            'notes', 
+            'order_status'
+        ]));
 
         return response()->json([
             'message' => 'Order updated successfully',
@@ -112,7 +120,7 @@ class OrderController extends Controller
             'order_id' => 'required|integer|exists:orders,id',
         ]);
 
-        $order = Order::where('id', $request->order_id)->first();
+        $order = Order::find($request->order_id);
         $shoes = Shoe::where('order_id', $request->order_id)->get();
         if ($shoes->isEmpty()) {
             return response()->json([
@@ -124,7 +132,7 @@ class OrderController extends Controller
         $order->total_price = $totalPrice;
         $order->save();
 
-        return response([
+        return response()->json([
             'message' => 'Checkout success',
             'order' => $order,
         ]);
