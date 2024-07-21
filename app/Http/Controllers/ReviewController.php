@@ -24,4 +24,21 @@ class ReviewController extends Controller
             'review' => $review,
         ], 201);
     }
+
+    public function getAverageRating($orderId)
+    {
+        $averageRating = Review::where('order_id', $orderId)->avg('rating');
+
+        return response()->json([
+            'average_rating' => number_format($averageRating, 1),
+        ]);
+}
+public function getReviews($orderId)
+{
+    $reviews = Review::where('order_id', $orderId)->get();
+
+    return response()->json([
+        'reviews' => $reviews,
+    ]);
+}
 }

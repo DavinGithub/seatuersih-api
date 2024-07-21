@@ -58,6 +58,9 @@ Route::group(['prefix' => 'order', 'middleware' => 'auth:sanctum'], function () 
     Route::get('/get/{id}', [OrderController::class, 'getOrder']);
     Route::post('/checkout', [OrderController::class, 'checkout']);
 });
+
 Route::group(['prefix' => 'review', 'middleware' => 'auth:sanctum'], function () {
     Route::post('/add', [ReviewController::class, 'addReview']);
+    Route::get('/average/{id}', [ReviewController::class, 'getAverageRating']);
+    Route::get('/all/{id}', [ReviewController::class, 'getReviews']); // Route baru untuk mengambil semua review
 });
