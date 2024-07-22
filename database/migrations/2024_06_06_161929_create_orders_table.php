@@ -27,7 +27,7 @@ return new class extends Migration
                 'shoe being cleaned', 
                 'completed', 
                 'decline'
-            ]);
+            ])->default('pending');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

@@ -15,6 +15,8 @@ class OrderController extends Controller
         $date = date('YmdHis');
         $nomor_pemesanan = $user->id . $date;
 
+        $orderStatus = $request->order_status ?? 'pending';
+
         $order = Order::create([
             'order_type' => $request->order_type,
             'order_number' => $nomor_pemesanan,
@@ -23,7 +25,7 @@ class OrderController extends Controller
             'total_price' => $request->total_price,
             'pickup_date' => $request->pickup_date,
             'notes' => $request->notes,
-            'order_status' => $request->order_status,
+            'order_status' => $orderStatus,
             'user_id' => $user->id,
         ]);
 

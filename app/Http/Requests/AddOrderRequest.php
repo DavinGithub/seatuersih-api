@@ -30,7 +30,7 @@ class AddOrderRequest extends FormRequest
             'total_price' => 'nullable|numeric',
             'pickup_date' => 'required|date',
             'notes' => 'nullable|string|max:255',
-            'order_status' => 'required|string|in:pending,driver on the way to location,shoe being cleaned,completed,decline',
+            'order_status' => 'nullable|string|in:pending,driver on the way to location,shoe being cleaned,completed,decline',
         ];
     }
 }
