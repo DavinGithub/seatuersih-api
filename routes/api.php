@@ -54,7 +54,7 @@ Route::group(['prefix' => 'order', 'middleware' => 'auth:sanctum'], function () 
     Route::post('/add', [OrderController::class, 'addOrder']);
     Route::post('/update', [OrderController::class, 'updateOrder']);
     Route::delete('/delete/{id}', [OrderController::class, 'deleteOrder']);
-    Route::get('/get', [OrderController::class, 'getOrders']);
+    Route::get('/getall', [OrderController::class, 'getOrders']);
     Route::get('/get/{id}', [OrderController::class, 'getOrder']);
     Route::post('/checkout', [OrderController::class, 'checkout']);
 });
@@ -62,5 +62,5 @@ Route::group(['prefix' => 'order', 'middleware' => 'auth:sanctum'], function () 
 Route::group(['prefix' => 'review', 'middleware' => 'auth:sanctum'], function () {
     Route::post('/add', [ReviewController::class, 'addReview']);
     Route::get('/average/{id}', [ReviewController::class, 'getAverageRating']);
-    Route::get('/all/{id}', [ReviewController::class, 'getReviews']); // Route baru untuk mengambil semua review
+    Route::get('/all/{id}', [ReviewController::class, 'getReviews']); 
 });
