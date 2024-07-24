@@ -20,17 +20,17 @@ return new class extends Migration
             $table->integer('total_price')->nullable();
             $table->datetime('pickup_date');
             $table->string('notes')->nullable();
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('laundry_id');
             $table->enum('order_status', [
-                'pending', 
-                'driver on the way to location', 
-                'shoe being cleaned', 
-                'completed', 
+                'pending',
+                'driver on the way to location',
+                'shoe being cleaned',
+                'completed',
                 'decline'
             ])->default('pending');
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('laundry_id')->references('id')->on('laundries')->onDelete('cascade');
         });
     }
 
@@ -40,7 +40,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
+            $table->dropForeign(['laundry_id']);
         });
         Schema::dropIfExists('orders');
     }

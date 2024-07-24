@@ -18,16 +18,16 @@ class Order extends Model
         'pickup_date',
         'notes',
         'order_status',
-        'user_id',
+        'laundry_id', // Update to laundry_id
     ];
 
-    public function user()
+    public function laundry()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Laundry::class); // Update relation
     }
 
     public function shoes()
     {
-        return $this->belongsTo(Shoe::class);
+        return $this->hasMany(Shoe::class); // Assuming an order has many shoes
     }
 }

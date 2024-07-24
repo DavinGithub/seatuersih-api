@@ -9,6 +9,7 @@ use App\Http\Controllers\ShoeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OtpController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\LaundryController;
 
 
 
@@ -63,4 +64,12 @@ Route::group(['prefix' => 'review', 'middleware' => 'auth:sanctum'], function ()
     Route::post('/add', [ReviewController::class, 'addReview']);
     Route::get('/average/{id}', [ReviewController::class, 'getAverageRating']);
     Route::get('/all/{id}', [ReviewController::class, 'getReviews']); 
+});
+
+Route::group(['prefix' => 'laundry', 'middleware' => 'auth:sanctum'], function () {
+    Route::post('/add', [LaundryController::class, 'addLaundry']);
+    Route::get('/getall', [LaundryController::class, 'getLaundries']);
+    Route::get('/get/{id}', [LaundryController::class, 'getLaundry']);
+    Route::put('/update/{id}', [LaundryController::class, 'updateLaundry']);
+    Route::delete('/delete/{id}', [LaundryController::class, 'deleteLaundry']);
 });

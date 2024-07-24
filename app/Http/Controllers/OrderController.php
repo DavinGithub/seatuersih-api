@@ -11,9 +11,8 @@ class OrderController extends Controller
 {
     public function addOrder(AddOrderRequest $request)
     {
-        $user = auth()->user();
         $date = date('YmdHis');
-        $nomor_pemesanan = $user->id . $date;
+        $nomor_pemesanan = $request->user()->id . $date;
 
         $orderStatus = $request->order_status ?? 'pending';
 
@@ -26,7 +25,7 @@ class OrderController extends Controller
             'pickup_date' => $request->pickup_date,
             'notes' => $request->notes,
             'order_status' => $orderStatus,
-            'user_id' => $user->id,
+            'laundry_id' => $request->input('laundry_id'), // Update to laundry_id
         ]);
 
         return response()->json([
@@ -88,8 +87,8 @@ class OrderController extends Controller
     public function getOrders()
     {
         $user = auth()->user();
-        $orders = Order::where('user_id', $user->id)->get();
-        if ($orders->isEmpty()) {
+        $orders = Order::where('laundry_id', $user->id)->get(); // Update to laundry_id
+        if ($orders->isEmpty()) {   
             return response()->json([
                 'message' => 'No orders found',
             ], 200);
