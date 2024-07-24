@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AddReviewRequest;
 use App\Models\Review;
-use App\Models\Order;
+use App\Models\Laundry; // Ubah dari Order ke Laundry
 use Illuminate\Http\Request;
 
 class ReviewController extends Controller
@@ -16,7 +16,7 @@ class ReviewController extends Controller
             'review' => $request->input('review'),
             'rating' => $request->input('rating'),
             'user_id' => $user->id,
-            'order_id' => $request->order_id,
+            'laundry_id' => $request->laundry_id, // Ubah dari order_id ke laundry_id
         ]);
 
         return response()->json([
@@ -25,20 +25,21 @@ class ReviewController extends Controller
         ], 201);
     }
 
-    public function getAverageRating($orderId)
+    public function getAverageRating($laundryId) // Ubah dari orderId ke laundryId
     {
-        $averageRating = Review::where('order_id', $orderId)->avg('rating');
+        $averageRating = Review::where('laundry_id', $laundryId)->avg('rating');
 
         return response()->json([
             'average_rating' => number_format($averageRating, 1),
         ]);
-}
-public function getReviews($orderId)
-{
-    $reviews = Review::where('order_id', $orderId)->get();
+    }
 
-    return response()->json([
-        'reviews' => $reviews,
-    ]);
-}
+    public function getReviews($laundryId) // Ubah dari orderId ke laundryId
+    {
+        $reviews = Review::where('laundry_id', $laundryId)->get();
+
+        return response()->json([
+            'reviews' => $reviews,
+        ]);
+    }
 }

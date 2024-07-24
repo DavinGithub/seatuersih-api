@@ -44,7 +44,7 @@ class UserController extends Controller
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response([
-                'message' => 'Invalid credentials',
+                'message' => 'Email atau kata sandi salah',
             ], 401);
         }
 
