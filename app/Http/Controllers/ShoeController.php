@@ -13,9 +13,7 @@ class ShoeController extends Controller
     {
         $request->validated();
 
-
         $shoe = Shoe::create([
-            'name' => $request->name,
             'addons' => $request->addons,
             'notes' =>  $request-> notes,
             'price' => $request -> price,
@@ -33,7 +31,6 @@ class ShoeController extends Controller
     {
          $request->validate([
             'id' => 'required|integer|exists:shoes,id',
-            'name' => 'sometimes|required|string|max:255',
             'addons' => 'sometimes|nullable|string|max:255',
             'notes' => 'sometimes|nullable|string|max:255',
             'price' => 'sometimes|required|numeric',

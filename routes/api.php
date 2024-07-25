@@ -10,7 +10,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OtpController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\LaundryController;
-
+use App\Http\Controllers\BrandController;
 
 
 // Route::get('/user', function (Request $request) {
@@ -72,4 +72,12 @@ Route::group(['prefix' => 'laundry', 'middleware' => 'auth:sanctum'], function (
     Route::get('/get/{id}', [LaundryController::class, 'getLaundry']);
     Route::put('/update/{id}', [LaundryController::class, 'updateLaundry']);
     Route::delete('/delete/{id}', [LaundryController::class, 'deleteLaundry']);
+});
+
+Route::group(['prefix' => 'brand', 'middleware' => 'auth:sanctum'], function () {
+    Route::post('/add', [BrandController::class, 'addBrand']); // Untuk menambah brand baru
+    Route::put('/update/{id}', [BrandController::class, 'updateBrand']); // Untuk memperbarui brand
+    Route::delete('delete/{id}', [BrandController::class, 'deleteBrand']); // Untuk menghapus brand
+    Route::get('/getall', [BrandController::class, 'getBrands']); // Untuk mendapatkan daftar brand
+    Route::get('/get/{id}', [BrandController::class, 'getBrand']); // Untuk mendapatkan detail brand
 });

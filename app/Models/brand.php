@@ -5,14 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Shoe extends Model
+class brand extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'addons',
-        'notes',
-        'price',
+        'name',
         'order_id',
     ];
 
@@ -21,4 +19,3 @@ class Shoe extends Model
         return $this->belongsTo(Order::class);
     }
 }
-

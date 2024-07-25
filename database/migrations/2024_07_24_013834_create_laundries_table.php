@@ -15,11 +15,8 @@ return new class extends Migration
             $table->id();
             $table->enum('order_type', ['regular_clean', 'deep_clean'])->default('regular_clean');
             $table->string('Description')->nullable();
-            $table->unsignedBigInteger('user_id'); 
             $table->timestamps();
-
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-        });
+        }); 
     }
 
     /**
@@ -27,9 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('laundries', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-        });
         Schema::dropIfExists('laundries');
     }
 };
