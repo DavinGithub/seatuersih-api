@@ -49,7 +49,7 @@ Route::group(['prefix' => 'shoe', 'middleware' => 'auth:sanctum'], function () {
     Route::post('/add', [ShoeController::class, 'addShoe']);
     Route::post('/update/{id}', [ShoeController::class, 'updateShoe']);
     Route::delete('/delete/{id}', [ShoeController::class, 'deleteShoe']);
-    Route::post('/getall', [ShoeController::class, 'getShoes']);
+    Route::get('/getall', [ShoeController::class, 'getShoes']);
     Route::get('/get/{id}', [ShoeController::class, 'getShoe']);
 });
 

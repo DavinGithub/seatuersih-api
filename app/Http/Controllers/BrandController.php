@@ -63,23 +63,28 @@ class BrandController extends Controller
     }
 
     public function getBrands(Request $request)
-    {
-        $request->validate([
-            'order_id' => 'sometimes|required|integer|exists:orders,id',
-        ]);
+{
+    $order_id = $request->input('order_id');
 
-        $brands = Brand::where('order_id', $request->order_id)->get();
-        if ($brands->isEmpty()) {
-            return response()->json([
-                'message' => 'No brands found',
-            ], 200);
-        }
+    // Jika ada order_id, filter berdasarkan order_id, jika tidak, ambil semua brand
+    if ($order_id) {
+        $brands = Brand::where('order_id', $order_id)->get();
+    } else {
+        $brands = Brand::all();
+    }
 
+    if ($brands->isEmpty()) {
         return response()->json([
-            'message' => 'Brands list',
-            'data' => $brands,
+            'message' => 'No brands found',
         ], 200);
     }
+
+    return response()->json([
+        'message' => 'Brands list',
+        'data' => $brands,
+    ], 200);
+}
+
 
     public function getBrand($id)
     {
