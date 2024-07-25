@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AddShoeRequest extends FormRequest
+class AddBrandRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -14,17 +14,14 @@ class AddShoeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'addons' => 'nullable|string|max:255',
-            'notes' => 'nullable|string|max:255',
-            'price' => 'required|numeric',
+            'name' => 'required|string|max:25',
         ];
     }
 
     public function messages(): array
     {
-        return [       
-            'price.required' => 'Harga harus diisi',
-            'price.numeric' => 'Harga harus berupa angka',
+        return [     
+            'name.required' => 'Nama sepatu harus diisi',
             // 'order_id.required' => 'Order ID harus diisi',
             // 'order_id.exists' => 'Order ID tidak valid',
         ];

@@ -25,7 +25,8 @@ class OrderController extends Controller
             'pickup_date' => $request->pickup_date,
             'notes' => $request->notes,
             'order_status' => $orderStatus,
-            'laundry_id' => $request->input('laundry_id'), // Update to laundry_id
+            'laundry_id' => $request->input('laundry_id'),
+            'user_id' => $request->user_id,
         ]);
 
         return response()->json([
@@ -87,7 +88,7 @@ class OrderController extends Controller
     public function getOrders()
     {
         $user = auth()->user();
-        $orders = Order::where('laundry_id', $user->id)->get(); // Update to laundry_id
+        $orders = Order::where('user_id', $user->id)->get(); // Retrieve orders by user_id
         if ($orders->isEmpty()) {   
             return response()->json([
                 'message' => 'No orders found',
@@ -139,3 +140,4 @@ class OrderController extends Controller
         ]);
     }
 }
+

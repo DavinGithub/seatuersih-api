@@ -13,13 +13,11 @@ class LaundryController extends Controller
         $request->validate([
             'order_type' => 'required|in:regular_clean,deep_clean',
             'description' => 'nullable|string|max:255',
-            'user_id' => 'required|integer|exists:users,id',
         ]);
 
         $laundry = Laundry::create([
             'order_type' => $request->order_type,
             'description' => $request->description,
-            'user_id' => $request->user_id,
         ]);
 
         return response()->json([
