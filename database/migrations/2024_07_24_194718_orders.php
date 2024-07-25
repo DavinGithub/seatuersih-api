@@ -21,6 +21,7 @@ return new class extends Migration
             $table->datetime('pickup_date');
             $table->string('notes')->nullable();
             $table->unsignedBigInteger('laundry_id');
+            $table->unsignedBigInteger('user_id'); 
             $table->enum('order_status', [
                 'pending',
                 'driver on the way to location',
@@ -31,6 +32,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('laundry_id')->references('id')->on('laundries')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade'); 
         });
     }
 
@@ -41,8 +43,8 @@ return new class extends Migration
     {
         Schema::table('orders', function (Blueprint $table) {
             $table->dropForeign(['laundry_id']);
+            $table->dropForeign(['user_id']); 
         });
         Schema::dropIfExists('orders');
     }
 };
-
