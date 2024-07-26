@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('laundries', function (Blueprint $table) {
             $table->id();
-            $table->enum('order_type', ['regular_clean', 'deep_clean'])->default('regular_clean');
-            $table->string('Description')->nullable();
+            $table->string('name');
+            $table->string('Description');
             $table->timestamps();
         }); 
     }

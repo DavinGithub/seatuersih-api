@@ -9,31 +9,31 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    public function addOrder(AddOrderRequest $request)
-    {
-        $date = date('YmdHis');
-        $nomor_pemesanan = $request->user()->id . $date;
+   public function addOrder(AddOrderRequest $request)
+{
+    $date = date('YmdHis');
+    $nomor_pemesanan = $request->user()->id . $date;
 
-        $orderStatus = $request->order_status ?? 'pending';
+    $orderStatus = $request->order_status ?? 'pending';
 
-        $order = Order::create([
-            'order_type' => $request->order_type,
-            'order_number' => $nomor_pemesanan,
-            'address' => $request->address,
-            'phone' => $request->phone,
-            'total_price' => $request->total_price,
-            'pickup_date' => $request->pickup_date,
-            'notes' => $request->notes,
-            'order_status' => $orderStatus,
-            'laundry_id' => $request->laundry_id,
-            'user_id' => $request->user_id,
-        ]);
+    $order = Order::create([
+        'order_type' => $request->order_type,
+        'order_number' => $nomor_pemesanan,
+        'address' => $request->address,
+        'phone' => $request->phone,
+        'total_price' => $request->total_price,
+        'pickup_date' => $request->pickup_date,
+        'notes' => $request->notes,
+        'order_status' => $orderStatus,
+        'laundry_id' => $request->laundry_id,
+        'user_id' => $request->user_id,
+    ]);
 
-        return response()->json([
-            'message' => 'Order added successfully',
-            'order' => $order,
-        ], 201);
-    }
+    return response()->json([
+        'message' => 'Order added successfully',
+        'order' => $order,
+    ], 201);
+}
 
     public function updateOrder(Request $request)
     {
@@ -47,7 +47,7 @@ class OrderController extends Controller
             'order_status' => 'sometimes|nullable|string|in:pending,driver on the way to location,shoe being cleaned,completed,decline',
         ]);
 
-        $order = Order::find($request['id']);
+        $order = Order::find($request->id);
         if (!$order) {
             return response()->json([
                 'message' => 'Order not found',
@@ -140,4 +140,3 @@ class OrderController extends Controller
         ]);
     }
 }
-

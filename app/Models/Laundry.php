@@ -9,7 +9,7 @@ class Laundry extends Model
     use HasFactory;
 
     protected $fillable = [
-        'order_type',
+        'name', 
         'description',
     ];
 
