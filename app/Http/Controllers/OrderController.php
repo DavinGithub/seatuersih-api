@@ -25,7 +25,7 @@ class OrderController extends Controller
             'pickup_date' => $request->pickup_date,
             'notes' => $request->notes,
             'order_status' => $orderStatus,
-            'laundry_id' => $request->input('laundry_id'),
+            'laundry_id' => $request->laundry_id,
             'user_id' => $request->user_id,
         ]);
 
