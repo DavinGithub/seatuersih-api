@@ -9,17 +9,16 @@ class LaundryController extends Controller
 {
     public function addLaundry(Request $request)
     {
-        $user = auth()->user();
         $request->validate([
-            'order_type' => 'required|in:regular_clean,deep_clean',
+            'name' => 'required|string|max:255', // Mengganti order_type dengan name
             'description' => 'nullable|string|max:255',
         ]);
-
+    
         $laundry = Laundry::create([
-            'order_type' => $request->order_type,
+            'name' => $request->name,
             'description' => $request->description,
         ]);
-
+    
         return response()->json([
             'message' => 'Laundry created successfully',
             'laundry' => $laundry,
@@ -53,7 +52,7 @@ class LaundryController extends Controller
     public function updateLaundry(Request $request, $id)
     {
         $request->validate([
-            'order_type' => 'sometimes|required|in:regular_clean,deep_clean',
+            'name' => 'sometimes|required|string|max:255', // Mengganti order_type dengan name
             'description' => 'nullable|string|max:255',
         ]);
 
@@ -64,7 +63,7 @@ class LaundryController extends Controller
             ], 404);
         }
 
-        $laundry->update($request->only(['order_type', 'description']));
+        $laundry->update($request->only(['name', 'description'])); // Mengganti order_type dengan name
 
         return response()->json([
             'message' => 'Laundry updated successfully',
