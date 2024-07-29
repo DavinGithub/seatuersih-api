@@ -4,20 +4,20 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBrandsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::create('brands', function (Blueprint $table) {
+        Schema::create('kabupatens', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->unsignedBigInteger('order_id')->nullable();
+            $table->string('kabupaten');
+            $table->unsignedBigInteger('laundry_id');
             $table->timestamps();
 
-            $table->foreign('order_id')->references('id')->on('orders')->onDelete('set null');
+            $table->foreign('laundry_id')->references('id')->on('laundries')->onDelete('cascade'); 
         });
     }
 
@@ -27,8 +27,8 @@ class CreateBrandsTable extends Migration
     public function down(): void
     {
         Schema::table('brands', function (Blueprint $table) {
-            $table->dropForeign(['order_id']);
+            $table->dropForeign(['laundry_id']);
         });
-        Schema::dropIfExists('brands');
+        Schema::dropIfExists('kabupatens');
     }
-}
+};
