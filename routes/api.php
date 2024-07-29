@@ -53,6 +53,7 @@ Route::group(['prefix' => 'shoe', 'middleware' => 'auth:sanctum'], function () {
     Route::delete('/delete/{id}', [ShoeController::class, 'deleteShoe']);
     Route::get('/getall', [ShoeController::class, 'getShoes']);
     Route::get('/get/{id}', [ShoeController::class, 'getShoe']);
+    Route::get('/getshoe/{order_id}', [ShoeController::class, 'getShoesByOrderId']);
 });
 
 Route::group(['prefix' => 'order', 'middleware' => 'auth:sanctum'], function () {
@@ -79,12 +80,13 @@ Route::group(['prefix' => 'laundry', 'middleware' => 'auth:sanctum'], function (
 });
 
 Route::group(['prefix' => 'brand', 'middleware' => 'auth:sanctum'], function () {
-    Route::post('/add', [BrandController::class, 'addBrand']); // Menambahkan brand baru
-    Route::put('/update', [BrandController::class, 'updateBrand']); // Memperbarui brand yang ada
-    Route::delete('/delete/{id}', [BrandController::class, 'deleteBrand']); // Menghapus brand berdasarkan ID
-    Route::get('/getall', [BrandController::class, 'getBrands']); // Mengambil daftar brand berdasarkan order_id
-    Route::get('/get/{id}', [BrandController::class, 'getBrand']); // Mengambil detail brand berdasarkan ID
+    Route::post('/add', [BrandController::class, 'addBrand']); 
+    Route::put('/update', [BrandController::class, 'updateBrand']);
+    Route::delete('/delete/{id}', [BrandController::class, 'deleteBrand']);
+    Route::get('/getall', [BrandController::class, 'getBrands']); 
+    Route::get('/get/{id}', [BrandController::class, 'getBrand']);
     Route::get('/user/{userId}', [BrandController::class, 'getBrandsByUserId']);
+    Route::get('/getbrand/{order_id}', [BrandController::class, 'getBrandsByOrderId']);
 });
 
 Route::group(['prefix' => 'kabupaten', 'middleware' => 'auth:sanctum'], function () {
