@@ -5,18 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Brand extends Model
+class Kabupaten extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'name',
-        'order_id',
+       'kabupaten',
+       'laundry_id'
     ];
 
-    public function order()
+    public function laundry()
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(Laundry::class);
     }
-
 }

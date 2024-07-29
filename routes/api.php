@@ -11,6 +11,8 @@ use App\Http\Controllers\OtpController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\LaundryController;
 use App\Http\Controllers\BrandController;
+use App\Http\Controllers\KabupatenController;
+use App\Http\Controllers\KecamatanController;
 
 
 
@@ -82,4 +84,22 @@ Route::group(['prefix' => 'brand', 'middleware' => 'auth:sanctum'], function () 
     Route::delete('/delete/{id}', [BrandController::class, 'deleteBrand']); // Menghapus brand berdasarkan ID
     Route::get('/getall', [BrandController::class, 'getBrands']); // Mengambil daftar brand berdasarkan order_id
     Route::get('/get/{id}', [BrandController::class, 'getBrand']); // Mengambil detail brand berdasarkan ID
+    Route::get('/user/{userId}', [BrandController::class, 'getBrandsByUserId']);
+});
+
+Route::group(['prefix' => 'kabupaten', 'middleware' => 'auth:sanctum'], function () {
+    Route::post('/add', [KabupatenController::class, 'addKabupaten']);
+    Route::put('/update', [KabupatenController::class, 'updateKabupaten']);
+    Route::delete('/delete/{id}', [KabupatenController::class, 'deleteKabupaten']);
+    Route::get('/getall', [KabupatenController::class, 'getKabupatens']);
+    Route::get('/get/{id}', [KabupatenController::class, 'getKabupaten']);
+});
+
+Route::group(['prefix' => 'kecamatan', 'middleware' => 'auth:sanctum'], function () {
+    Route::post('/add', [KecamatanController::class, 'addKecamatan']);
+    Route::put('/update', [KecamatanController::class, 'updateKecamatan']);
+    Route::delete('/delete/{id}', [KecamatanController::class, 'deleteKecamatan']);
+    Route::get('/getall', [KecamatanController::class, 'getKecamatans']);
+    Route::get('/get/{id}', [KecamatanController::class, 'getKecamatan']);
+    Route::get('/laundry/{laundry_id}', [KecamatanController::class, 'getKecamatansByLaundryId']); 
 });

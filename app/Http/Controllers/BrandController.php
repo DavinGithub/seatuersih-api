@@ -100,4 +100,21 @@ class BrandController extends Controller
             'data' => $brand,
         ], 200);
     }
+
+    public function getBrandsByUserId($userId)
+{
+    $brands = Brand::where('order_id', $userId)->get();
+
+    if ($brands->isEmpty()) {
+        return response()->json([
+            'message' => 'No brands found for this user',
+        ], 200);
+    }
+
+    return response()->json([
+        'message' => 'Brands list for the user',
+        'data' => $brands,
+    ], 200);
+}
+
 }

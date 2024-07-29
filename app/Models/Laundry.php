@@ -13,8 +13,6 @@ class Laundry extends Model
         'description',
     ];
 
-
-
     public function reviews()
     {
         return $this->hasMany(Review::class);
@@ -23,5 +21,15 @@ class Laundry extends Model
     public function orders()
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function kabupatens()
+    {
+        return $this->hasMany(Kabupaten::class);
+    }
+
+    public function kecamatans()
+    {
+        return $this->hasMany(Kecamatan::class);
     }
 }
