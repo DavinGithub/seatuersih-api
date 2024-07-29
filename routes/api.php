@@ -13,10 +13,6 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\KabupatenController;
 use App\Http\Controllers\KecamatanController;
 
-// Route::get('/user', function (Request $request) {
-//     return $request->user();
-// })->middleware('auth:sanctum');
-
 Route::group(['prefix' => 'users'], function () {
     Route::post('/register', [UserController::class, 'register']);
     Route::post('/login', [UserController::class, 'login']);
@@ -24,7 +20,7 @@ Route::group(['prefix' => 'users'], function () {
     Route::post('/update-profile-picture', [UserController::class, 'updateProfilePicture'])->middleware('auth:sanctum');
     Route::delete('/logout', [UserController::class, 'logout'])->middleware('auth:sanctum');
     Route::post('/send-otp', [OtpController::class, 'sendOtp'])->middleware('auth:sanctum');
-    Route::post('/verify-otp', [OtpController::class, 'verifyOtp'])->middleware('auth:sanctum']);
+    Route::post('/verify-otp', [OtpController::class, 'verifyOtp'])->middleware('auth:sanctum');
 
     Route::group(['prefix' => 'update', 'middleware' => 'auth:sanctum'], function() {
         Route::post('/username', [UserController::class, 'updateUsername']);
@@ -74,12 +70,12 @@ Route::group(['prefix' => 'laundry', 'middleware' => 'auth:sanctum'], function (
 });
 
 Route::group(['prefix' => 'brand', 'middleware' => 'auth:sanctum'], function () {
-    Route::post('/add', [BrandController::class, 'addBrand']); // Menambahkan brand baru
-    Route::put('/update', [BrandController::class, 'updateBrand']); // Memperbarui brand yang ada
-    Route::delete('/delete/{id}', [BrandController::class, 'deleteBrand']); // Menghapus brand berdasarkan ID
-    Route::get('/getall', [BrandController::class, 'getBrands']); // Mengambil daftar brand berdasarkan order_id
-    Route::get('/get/{id}', [BrandController::class, 'getBrand']); // Mengambil detail brand berdasarkan ID
-    Route::get('/user/{userId}', [BrandController::class, 'getBrandsByUserId']); // Mengambil brand berdasarkan user ID
+    Route::post('/add', [BrandController::class, 'addBrand']);
+    Route::put('/update', [BrandController::class, 'updateBrand']);
+    Route::delete('/delete/{id}', [BrandController::class, 'deleteBrand']);
+    Route::get('/getall', [BrandController::class, 'getBrands']);
+    Route::get('/get/{id}', [BrandController::class, 'getBrand']);
+    Route::get('/user/{userId}', [BrandController::class, 'getBrandsByUserId']);
 });
 
 Route::group(['prefix' => 'kabupaten', 'middleware' => 'auth:sanctum'], function () {
@@ -96,5 +92,5 @@ Route::group(['prefix' => 'kecamatan', 'middleware' => 'auth:sanctum'], function
     Route::delete('/delete/{id}', [KecamatanController::class, 'deleteKecamatan']);
     Route::get('/getall', [KecamatanController::class, 'getKecamatans']);
     Route::get('/get/{id}', [KecamatanController::class, 'getKecamatan']);
-    Route::get('/laundry/{laundry_id}', [KecamatanController::class, 'getKecamatansByLaundryId']); // Mendapatkan kecamatan berdasarkan laundry_id
+    Route::get('/laundry/{laundry_id}', [KecamatanController::class, 'getKecamatansByLaundryId']);
 });
