@@ -28,8 +28,7 @@ Route::group(['prefix' => 'users'], function () {
     Route::post('/update-profile-picture', [UserController::class, 'updateProfilePicture'])->middleware('auth:sanctum');
     Route::delete('/logout', [UserController::class, 'logout'])->middleware('auth:sanctum');
     Route::post('/send-otp', [OtpController::class, 'sendOtp'])->middleware('auth:sanctum');
-    Route::post('/verify-otp', [OtpController::class, 'verifyOtp'])->middleware('auth:sanctum');
-
+    Route::post('/verify-otp', [OtpController::class, 'verifyOtp'])->middleware('auth:sanctum'); // Perbaiki baris ini
 
     Route::group(['prefix' => 'update', 'middleware' => 'auth:sanctum'], function() {
         Route::post('/username', [UserController::class, 'updateUsername']);
@@ -40,6 +39,7 @@ Route::group(['prefix' => 'users'], function () {
         Route::post('/all', [UserController::class, 'updateUser']);
     });
 });
+
 
 Route::group(['prefix' => '/admins'], function () {
     Route::post('/register', [AdminController::class, 'register']);
