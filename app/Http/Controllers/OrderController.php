@@ -5,41 +5,42 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AddOrderRequest;
 use App\Models\Order;
 use App\Models\Shoe;
+use App\Models\Brand;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-   public function addOrder(AddOrderRequest $request)
-{
-    $date = date('YmdHis');
-    $nomor_pemesanan = $request->user()->id . $date;
+    public function addOrder(AddOrderRequest $request)
+    {
+        $date = date('YmdHis');
+        $nomor_pemesanan = $request->user()->id . $date;
 
-    $orderStatus = $request->order_status ?? 'pending';
+        $orderStatus = $request->order_status ?? 'pending';
 
-    $order = Order::create([
-        'order_type' => $request->order_type,
-        'order_number' => $nomor_pemesanan,
-        'address' => $request->address,
-        'phone' => $request->phone,
-        'total_price' => $request->total_price,
-        'pickup_date' => $request->pickup_date,
-        'notes' => $request->notes,
-        'order_status' => $orderStatus,
-        'laundry_id' => $request->laundry_id,
-        'user_id' => $request->user_id,
-    ]);
+        $order = Order::create([
+            'order_type' => $request->order_type,
+            'order_number' => $nomor_pemesanan,
+            'detail_address' => $request->detail_address, // Ubah dari 'address' ke 'detail_address'
+            'phone' => $request->phone,
+            'total_price' => $request->total_price,
+            'pickup_date' => $request->pickup_date,
+            'notes' => $request->notes,
+            'order_status' => $orderStatus,
+            'laundry_id' => $request->laundry_id,
+            'user_id' => $request->user_id,
+        ]);
 
-    return response()->json([
-        'message' => 'Order added successfully',
-        'order' => $order,
-    ], 201);
-}
+        return response()->json([
+            'message' => 'Order added successfully',
+            'order' => $order,
+        ], 201);
+    }
 
     public function updateOrder(Request $request)
     {
         $request->validate([
             'id' => 'required|integer|exists:orders,id',
-            'address' => 'sometimes|required|string|max:255',
+            'detail_address' => 'sometimes|required|string|max:255', // Ubah dari 'address' ke 'detail_address'
             'phone' => 'sometimes|required|string|max:255',
             'total_price' => 'sometimes|required|numeric',
             'pickup_date' => 'sometimes|required|date',
@@ -55,7 +56,7 @@ class OrderController extends Controller
         }
 
         $order->update($request->only([
-            'address', 
+            'detail_address', // Ubah dari 'address' ke 'detail_address'
             'phone', 
             'total_price', 
             'pickup_date', 
@@ -88,7 +89,7 @@ class OrderController extends Controller
     public function getOrders()
     {
         $user = auth()->user();
-        $orders = Order::where('user_id', $user->id)->get(); // Retrieve orders by user_id
+        $orders = Order::where('user_id', $user->id)->get();
         if ($orders->isEmpty()) {   
             return response()->json([
                 'message' => 'No orders found',
@@ -127,6 +128,13 @@ class OrderController extends Controller
         if ($shoes->isEmpty()) {
             return response()->json([
                 'message' => 'No shoes found',
+            ], 200);
+        }
+
+        $brands = Brand::where('order_id', $request->order_id)->get();
+        if ($brands->isEmpty()) {
+            return response()->json([
+                'message' => 'No brands found',
             ], 200);
         }
 
