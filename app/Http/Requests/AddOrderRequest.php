@@ -25,7 +25,7 @@ class AddOrderRequest extends FormRequest
     {
         return [
             'order_type' => 'required|string|in:regular_clean,deep_clean',
-            'address' => 'required|string|max:255',
+            'detail_address' => 'required|string|max:255',
             'phone' => 'required|string|max:255',
             'total_price' => 'nullable|numeric',
             'pickup_date' => 'required|date',

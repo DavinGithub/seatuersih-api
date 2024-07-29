@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->enum('order_type', ['regular_clean', 'deep_clean'])->default('regular_clean');
             $table->string('order_number');
-            $table->string('address');
+            $table->string('detail_address');
             $table->string('phone');
             $table->integer('total_price')->nullable();
             $table->datetime('pickup_date');
