@@ -107,5 +107,22 @@ class ShoeController extends Controller
             'data' => $shoe,
         ], 200);
     }
+    
+    public function getShoesByOrderId($order_id)
+{
+    $shoes = Shoe::where('order_id', $order_id)->get();
+
+    if ($shoes->isEmpty()) {
+        return response()->json([
+            'message' => 'No shoes found for this order',
+        ], 200);
+    }
+
+    return response()->json([
+        'message' => 'Shoes list for the order',
+        'data' => $shoes,
+    ], 200);
+}
+
 
 }
