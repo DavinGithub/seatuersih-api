@@ -14,6 +14,7 @@ class AddReviewRequest extends FormRequest
     public function rules()
     {
         return [
+            'order_type' => 'required|string|in:Regular Clean,Deep Clean',
             'review' => 'required|string',
             'rating' => 'required|numeric|min:0.5|max:5', 
         

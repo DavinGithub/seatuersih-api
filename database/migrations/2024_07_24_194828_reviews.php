@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('reviews', function (Blueprint $table) {
             $table->id();
-            $table->enum('order_type', ['regular_clean', 'deep_clean']);
+            $table->enum('order_type', ['Regular Clean','Deep Clean']);
             $table->text('review');
             $table->decimal('rating', 3, 1);
             $table->unsignedBigInteger('user_id');
