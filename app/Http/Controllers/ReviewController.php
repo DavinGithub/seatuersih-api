@@ -13,6 +13,7 @@ class ReviewController extends Controller
     {
         $user = auth()->user();
         $review = Review::create([ 
+            'order_type' => $request->order_type,
             'review' => $request->review,
             'rating' => $request->rating,
             'user_id' => $user->id,
