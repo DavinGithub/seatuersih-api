@@ -43,7 +43,7 @@ class XenditService
     }
 
     /**
-     * Get an invoice by ID.
+     * Expire an invoice by ID.
      *
      * @param string $invoiceId
      * @return \Illuminate\Http\Client\Response

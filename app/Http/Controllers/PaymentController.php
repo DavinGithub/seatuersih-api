@@ -2,11 +2,8 @@
 
 namespace App\Http\Controllers;
 
-require_once base_path('/vendor/autoload.php');
-
-use App\Http\Requests\PaymentRequest;
-use App\Models\Order;
 use App\Services\XenditService;
+use App\Models\Order;
 use App\Models\Payment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -25,6 +22,7 @@ class PaymentController extends Controller
         $request->validate([
             'order_id' => 'required|integer|exists:orders,id',
         ]);
+
         $user = auth()->user();
         $external_id = (string) date('YmdHis');
         $description = 'Bayar Laundry';
@@ -45,6 +43,7 @@ class PaymentController extends Controller
                 'message' => 'Payment already paid',
             ], 400);
         }
+
         $options = [
             'external_id' => $external_id,
             'description' => $description,
@@ -53,25 +52,33 @@ class PaymentController extends Controller
         ];
         $response = $this->xenditService->createInvoice($options);
 
-        $payment = new Payment();
-        $payment->status = 'pending';
-        $payment->invoice_id = $response['id'];
-        $payment->checkout_link = $response['invoice_url'];
-        $payment->external_id = $external_id;
-        $payment->user_id = $user->id;
-        $payment->order_id = $order->id;
-        $payment->save();
+        if ($response->successful()) {
+            $data = $response->json();
+            if (isset($data['id'])) {
+                $payment = new Payment();
+                $payment->status = 'pending';
+                $payment->invoice_id = $data['id'];
+                $payment->checkout_link = $data['invoice_url'];
+                $payment->external_id = $external_id;
+                $payment->user_id = $user->id;
+                $payment->order_id = $order->id;
+                $payment->save();
 
-        // send notification to user
-        $expiredDate = Carbon::parse($response['expiry_date']);
-        $description = 'Menunggu pembayaran laundry  ' . $order->no_pemesanan . ' ' . '. Bayar sebelum tamggal ' . $expiredDate->format('d F Y') . ' pukul ' . $expiredDate->format('H:i') . ' WIB';
-        
-        return response([
-            'status' => 'success',
-            'message' => 'Payment created successfully',
-            'checkout_link' => $response['invoice_url'],
-            'description' => $description,
-        ], 201);
+                $expiredDate = Carbon::parse($data['expiry_date']);
+                $description = 'Menunggu pembayaran laundry ' . $order->no_pemesanan . '. Bayar sebelum tanggal ' . $expiredDate->format('d F Y') . ' pukul ' . $expiredDate->format('H:i') . ' WIB';
+
+                return response([
+                    'status' => 'success',
+                    'message' => 'Payment created successfully',
+                    'checkout_link' => $data['invoice_url'],
+                    'description' => $description,
+                ], 201);
+            } else {
+                return response()->json(['error' => 'ID tidak ditemukan dalam respons'], 400);
+            }
+        } else {
+            return response()->json(['error' => 'Gagal membuat invoice'], 500);
+        }
     }
 
     public function expirePayment($id)
@@ -83,7 +90,7 @@ class PaymentController extends Controller
                 'message' => 'Payment not found',
             ], 404);
         }
-        if($payment->status == 'expired') {
+        if ($payment->status == 'expired') {
             return response([
                 'status' => 'failed',
                 'message' => 'Payment already expired',
@@ -113,14 +120,19 @@ class PaymentController extends Controller
         }
         $response = $this->xenditService->getInvoice($payment->invoice_id);
 
-        $payment->status = strtolower($response['status']);
-        $payment->save();
+        if ($response->successful()) {
+            $data = $response->json();
+            if (isset($data['status'])) {
+                $payment->status = strtolower($data['status']);
+                $payment->save();
 
-        return response([
-            'status' => 'success',
-            'message' => 'Payment status updated',
-            'payment_status' => $payment->status,
-        ], 200);
+                return response()->json(['status' => 'success', 'message' => 'Payment status updated', 'payment_status' => $payment->status], 200);
+            } else {
+                return response()->json(['error' => 'Status tidak ditemukan dalam respons'], 400);
+            }
+        } else {
+            return response()->json(['error' => 'Gagal mendapatkan status invoice'], 500);
+        }
     }
 
     public function invoiceStatus(Request $request)
