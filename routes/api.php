@@ -13,6 +13,7 @@ use App\Http\Controllers\LaundryController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\KabupatenController;
 use App\Http\Controllers\KecamatanController;
+use App\Http\Controllers\PaymentController;
 
 
 
@@ -105,3 +106,8 @@ Route::group(['prefix' => 'kecamatan', 'middleware' => 'auth:sanctum'], function
     Route::get('/get/{id}', [KecamatanController::class, 'getKecamatan']);
     Route::get('/laundry/{laundry_id}', [KecamatanController::class, 'getKecamatansByLaundryId']); 
 });
+
+Route::group(['prefix' => 'payment', 'middleware' => 'auth:sanctum'], function() {
+    Route::post('/create', [PaymentController::class, 'createPayment']);
+    Route::get('/{id}', [PaymentController::class, 'getPaymentStatus']);
+} );
