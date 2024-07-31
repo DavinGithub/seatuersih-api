@@ -25,7 +25,7 @@ class PaymentController extends Controller
         $order = Order::where('id', $request->order_id)->first();
         $external_id = (string) date('YmdHis');
         $description = 'Membayar Laundry ' . $order->laundry->nama_laundry . ' ' . $user->username;
-        $amount = $order->total_harga;
+        $amount = $order->total_price;
 
         $transaction = Payment::where('order_id', $order->id)->first();
         if ($transaction != null && $transaction->status == 'pending') {
