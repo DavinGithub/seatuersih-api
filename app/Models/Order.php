@@ -22,6 +22,10 @@ class Order extends Model
         'laundry_id',
     ];
 
+    protected $casts = [
+        'total_price' => 'integer',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);

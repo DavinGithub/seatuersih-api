@@ -18,13 +18,11 @@ class PaymentController extends Controller
     }
         public function createPayment(Request $request)
     {
-        $request->validate([
-            'order_id' => 'required|integer|exists:orders,id'
-        ]);
+        $request->validate();
         $user = auth()->user();
         $order = Order::where('id', $request->order_id)->first();
         $external_id = (string) date('YmdHis');
-        $description = 'Membayar Laundry ' . $order->laundry->nama_laundry . ' ' . $user->username;
+        $description = 'Membayar Laundry';
         $amount = $order->total_price;
 
         $transaction = Payment::where('order_id', $order->id)->first();
