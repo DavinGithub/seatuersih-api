@@ -13,8 +13,7 @@ class BrandController extends Controller
         $request->validated();
 
         $brand = Brand::create([
-            'name' => $request->name,
-            'order_id' => $request->order_id,
+            'brand' => $request->brand,
         ]);
 
         return response()->json([
@@ -27,8 +26,7 @@ class BrandController extends Controller
     {
         $request->validate([
             'id' => 'required|integer|exists:brands,id',
-            'name' => 'sometimes|required|string|max:255',
-            'order_id' => 'sometimes|required|integer|exists:orders,id',
+            'brand' => 'sometimes|required|string|max:255',
         ]);
 
         $brand = Brand::find($request['id']);
@@ -62,29 +60,21 @@ class BrandController extends Controller
         ], 200);
     }
 
-    public function getBrands(Request $request)
-{
-    $order_id = $request->input('order_id');
-
-    // Jika ada order_id, filter berdasarkan order_id, jika tidak, ambil semua brand
-    if ($order_id) {
-        $brands = Brand::where('order_id', $order_id)->get();
-    } else {
+    public function getBrands()
+    {
         $brands = Brand::all();
-    }
 
-    if ($brands->isEmpty()) {
+        if ($brands->isEmpty()) {
+            return response()->json([
+                'message' => 'No brands found',
+            ], 200);
+        }
+
         return response()->json([
-            'message' => 'No brands found',
+            'message' => 'Brands list',
+            'data' => $brands,
         ], 200);
     }
-
-    return response()->json([
-        'message' => 'Brands list',
-        'data' => $brands,
-    ], 200);
-}
-
 
     public function getBrand($id)
     {
@@ -102,35 +92,18 @@ class BrandController extends Controller
     }
 
     public function getBrandsByUserId($userId)
-{
-    $brands = Brand::where('order_id', $userId)->get();
+    {
+        $brands = Brand::where('user_id', $userId)->get();
 
-    if ($brands->isEmpty()) {
+        if ($brands->isEmpty()) {
+            return response()->json([
+                'message' => 'No brands found for this user',
+            ], 200);
+        }
+
         return response()->json([
-            'message' => 'No brands found for this user',
+            'message' => 'Brands list for the user',
+            'data' => $brands,
         ], 200);
     }
-
-    return response()->json([
-        'message' => 'Brands list for the user',
-        'data' => $brands,
-    ], 200);
-}
-public function getBrandsByOrderId($order_id)
-{
-    $brands = Brand::where('order_id', $order_id)->get();
-
-    if ($brands->isEmpty()) {
-        return response()->json([
-            'message' => 'No brands found for this order',
-        ], 200);
-    }
-
-    return response()->json([
-        'message' => 'Brands list for the order',
-        'data' => $brands,
-    ], 200);
-}
-
-
 }

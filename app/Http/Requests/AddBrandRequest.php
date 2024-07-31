@@ -14,14 +14,14 @@ class AddBrandRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:25',
+            'brand' => 'required|string|max:25',
         ];
     }
 
     public function messages(): array
     {
         return [     
-            'name.required' => 'Nama sepatu harus diisi',
+            'brand.required' => 'Nama sepatu harus diisi',
             // 'order_id.required' => 'Order ID harus diisi',
             // 'order_id.exists' => 'Order ID tidak valid',
         ];
