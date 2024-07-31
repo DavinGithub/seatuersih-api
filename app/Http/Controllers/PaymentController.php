@@ -16,18 +16,16 @@ class PaymentController extends Controller
     {
         $this->xenditService = $xenditService;
     }
-
-    public function createPayment(Request $request)
+        public function createPayment(Request $request)
     {
         $request->validate([
-            'order_id' => 'required|integer|exists:orders,id',
+            'order_id' => 'required|integer|exists:orders,id'
         ]);
-
         $user = auth()->user();
+        $order = Order::where('id', $request->order_id)->first();
         $external_id = (string) date('YmdHis');
-        $description = 'Bayar Laundry';
-        $order = Order::where('id', $request->order_id)->first();   
-        $amount = $order->price_order;
+        $description = 'Membayar Laundry ' . $order->laundry->nama_laundry . ' ' . $user->username;
+        $amount = $order->total_harga;
 
         $transaction = Payment::where('order_id', $order->id)->first();
         if ($transaction != null && $transaction->status == 'pending') {
@@ -43,42 +41,29 @@ class PaymentController extends Controller
                 'message' => 'Payment already paid',
             ], 400);
         }
-
         $options = [
             'external_id' => $external_id,
             'description' => $description,
             'amount' => $amount,
             'currency' => 'IDR',
+            'payment_methods' => ["OVO", "DANA", "SHOPEEPAY", "LINKAJA", "JENIUSPAY", "QRIS"]
         ];
         $response = $this->xenditService->createInvoice($options);
+        $payment = new Payment();
+        $payment->status = 'pending';
+        $payment->invoice_id = $response['id'];
+        $payment->checkout_link = $response['invoice_url'];
+        $payment->external_id = $external_id;
+        $payment->user_id = $user->id;
+        $payment->order_id = $order->id;
+        $payment->save();
 
-        if ($response->successful()) {
-            $data = $response->json();
-            if (isset($data['id'])) {
-                $payment = new Payment();
-                $payment->status = 'pending';
-                $payment->invoice_id = $data['id'];
-                $payment->checkout_link = $data['invoice_url'];
-                $payment->external_id = $external_id;
-                $payment->user_id = $user->id;
-                $payment->order_id = $order->id;
-                $payment->save();
-
-                $expiredDate = Carbon::parse($data['expiry_date']);
-                $description = 'Menunggu pembayaran laundry ' . $order->no_pemesanan . '. Bayar sebelum tanggal ' . $expiredDate->format('d F Y') . ' pukul ' . $expiredDate->format('H:i') . ' WIB';
-
-                return response([
-                    'status' => 'success',
-                    'message' => 'Payment created successfully',
-                    'checkout_link' => $data['invoice_url'],
-                    'description' => $description,
-                ], 201);
-            } else {
-                return response()->json(['error' => 'ID tidak ditemukan dalam respons'], 400);
-            }
-        } else {
-            return response()->json(['error' => 'Gagal membuat invoice'], 500);
-        }
+        return response([
+            'status' => 'success',
+            'message' => 'Payment created successfully',
+            'checkout_link' => $response['invoice_url'],
+            'description' => $description,
+        ], 201);
     }
 
     public function expirePayment($id)
