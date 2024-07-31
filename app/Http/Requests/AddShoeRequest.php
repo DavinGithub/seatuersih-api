@@ -14,6 +14,7 @@ class AddShoeRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'brand' => 'required|string|max:255',
             'addons' => 'nullable|string|max:255',
             'notes' => 'nullable|string|max:255',
             'price' => 'required|numeric',

@@ -53,7 +53,7 @@ class PaymentController extends Controller
         ];
 
         $response = $this->xenditService->createInvoice($options);
-
+        dd($response->json());
         if (isset($response['id'])) {
             $payment = new Payment();
             $payment->status = 'pending';
@@ -186,4 +186,3 @@ class PaymentController extends Controller
         ], 200);
     }
 }
-    
