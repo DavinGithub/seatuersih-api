@@ -14,6 +14,7 @@ class ShoeController extends Controller
         $request->validated();
 
         $shoe = Shoe::create([
+            'brand' => $request->brand,
             'addons' => $request->addons,
             'notes' =>  $request-> notes,
             'price' => $request -> price,

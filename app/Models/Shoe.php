@@ -10,6 +10,7 @@ class Shoe extends Model
     use HasFactory;
 
     protected $fillable = [
+        'brand',
         'addons',
         'notes',
         'price',
