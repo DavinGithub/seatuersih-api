@@ -110,4 +110,4 @@ Route::group(['prefix' => 'kecamatan', 'middleware' => 'auth:sanctum'], function
 Route::group(['prefix' => 'payment', 'middleware' => 'auth:sanctum'], function() {
     Route::post('/create', [PaymentController::class, 'createPayment']);
     Route::get('/{id}', [PaymentController::class, 'getPaymentStatus']);
-} );    
+} );
