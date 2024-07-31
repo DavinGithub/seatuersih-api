@@ -42,11 +42,6 @@ class Order extends Model
         return $this->hasMany(Shoe::class);
     }
 
-    public function brand()
-    {
-        return $this->hasMany(brand::class);
-    }
-
     public function payments()
     {
         return $this->hasMany(Payment::class);
