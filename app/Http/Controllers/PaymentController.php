@@ -18,9 +18,7 @@ class PaymentController extends Controller
     }
         public function createPayment(Request $request)
     {
-        $request->validate([
-            'order_id' => 'required|integer|exists:orders,id'
-        ]);
+        $request->validate();
         $user = auth()->user();
         $order = Order::where('id', $request->order_id)->first();
         $external_id = (string) date('YmdHis');
