@@ -10,13 +10,7 @@ class Brand extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
-        'order_id',
+        'brand',
     ];
-
-    public function order()
-    {
-        return $this->belongsTo(Order::class);
-    }
 
 }

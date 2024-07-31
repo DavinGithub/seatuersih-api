@@ -13,11 +13,10 @@ class CreateBrandsTable extends Migration
     {
         Schema::create('brands', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->unsignedBigInteger('order_id')->nullable();
+            $table->string('brand');
+
             $table->timestamps();
 
-            $table->foreign('order_id')->references('id')->on('orders')->onDelete('set null');
         });
     }
 
@@ -26,9 +25,6 @@ class CreateBrandsTable extends Migration
      */
     public function down(): void
     {
-        Schema::table('brands', function (Blueprint $table) {
-            $table->dropForeign(['order_id']);
-        });
         Schema::dropIfExists('brands');
     }
 }
