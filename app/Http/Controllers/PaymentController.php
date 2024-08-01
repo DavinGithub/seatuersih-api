@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PaymentRequest;
 use App\Services\XenditService;
 use App\Models\Order;
 use App\Models\Payment;
@@ -16,12 +17,9 @@ class PaymentController extends Controller
         $this->xenditService = $xenditService;
     }
 
-    public function createPayment(Request $request)
+    public function createPayment(PaymentRequest $request)
     {
-        $request->validate([
-            'order_id' => 'required|integer|exists:orders,id'
-        ]);
-
+        $request->validate();
         $user = auth()->user();
         $order = Order::find($request->order_id);
         $external_id = (string) date('YmdHis');
