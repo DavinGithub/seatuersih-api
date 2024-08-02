@@ -103,20 +103,19 @@ class OrderController extends Controller
     }
 
     public function getOrder($id)
-{
-    $order = Order::with('shoes')->find($id);
-    if (!$order) {
+    {
+        $order = Order::find($id);
+        if (!$order) {
+            return response()->json([
+                'message' => 'Order not found',
+            ], 404);
+        }
+
         return response()->json([
-            'message' => 'Order not found',
-        ], 404);
+            'message' => 'Order details',
+            'data' => $order,
+        ], 200);
     }
-
-    return response()->json([
-        'message' => 'Order details',
-        'data' => $order,
-    ], 200);
-}
-
 
     public function checkout(Request $request)
     {
