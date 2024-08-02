@@ -122,7 +122,7 @@ class OrderController extends Controller
         $request->validate([
             'order_id' => 'required|integer|exists:orders,id',
         ]);
-
+    
         $order = Order::find($request->order_id);
         $shoes = Shoe::where('order_id', $request->order_id)->get();
         if ($shoes->isEmpty()) {
@@ -130,18 +130,11 @@ class OrderController extends Controller
                 'message' => 'No shoes found',
             ], 200);
         }
-
-        $brands = Brand::where('order_id', $request->order_id)->get();
-        if ($brands->isEmpty()) {
-            return response()->json([
-                'message' => 'No brands found',
-            ], 200);
-        }
-
+    
         $totalPrice = $shoes->sum('price');
         $order->total_price = $totalPrice;
         $order->save();
-
+    
         return response()->json([
             'message' => 'Checkout success',
             'order' => $order,
