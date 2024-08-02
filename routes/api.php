@@ -55,6 +55,8 @@ Route::group(['prefix' => 'order', 'middleware' => 'auth:sanctum'], function () 
     Route::get('/getall', [OrderController::class, 'getOrders']);
     Route::get('/get/{id}', [OrderController::class, 'getOrder']);
     Route::post('/checkout', [OrderController::class, 'checkout']);
+    Route::get('/status/{status}', [OrderController::class, 'getOrdersByStatus']);
+
 });
 
 Route::group(['prefix' => 'review', 'middleware' => 'auth:sanctum'], function () {
