@@ -103,5 +103,5 @@ Route::group(['prefix' => 'payment', 'middleware' => 'auth:sanctum'], function()
     Route::post('/create', [PaymentController::class, 'createPayment']);
     Route::post('/update', [PaymentController::class, 'updatePaymentStatus']);
     Route::delete('/expire/{id}', [PaymentController::class, 'expirePayment']);
-    Route::get('/get/{id}', [PaymentController::class, 'getInvoiceUser']);
+    Route::get('/get', [PaymentController::class, 'getInvoiceUser']);
 } );
