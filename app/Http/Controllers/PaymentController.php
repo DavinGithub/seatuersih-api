@@ -53,12 +53,15 @@ class PaymentController extends Controller
         ];
 
         $response = $this->xenditService->createInvoice($options);
-        dd($response->json());
-        if (isset($response['id'])) {
+        
+        // Pastikan response di decoding dari JSON
+        $data = $response->json();
+
+        if (isset($data['id'])) {
             $payment = new Payment();
             $payment->status = 'pending';
-            $payment->invoice_id = $response['id'];
-            $payment->checkout_link = $response['invoice_url'];
+            $payment->invoice_id = $data['id'];
+            $payment->checkout_link = $data['invoice_url'];
             $payment->external_id = $external_id;
             $payment->user_id = $user->id;
             $payment->order_id = $order->id;
@@ -67,7 +70,7 @@ class PaymentController extends Controller
             return response([
                 'status' => 'success',
                 'message' => 'Payment created successfully',
-                'checkout_link' => $response['invoice_url'],
+                'checkout_link' => $data['invoice_url'],
                 'description' => $description,
             ], 201);
         } else {
@@ -95,20 +98,29 @@ class PaymentController extends Controller
             ], 400);
         }
 
-        $this->xenditService->expireInvoice($payment->invoice_id);
-        $payment->status = 'expired';
-        $payment->save();
+        // Ubah ke POST untuk expireInvoice
+        $response = $this->xenditService->expireInvoice($payment->invoice_id);
 
-        return response([
-            'status' => 'success',
-            'message' => 'Payment expired',
-        ], 200);
+        if ($response->successful()) {
+            $payment->status = 'expired';
+            $payment->save();
+
+            return response([
+                'status' => 'success',
+                'message' => 'Payment expired',
+            ], 200);
+        } else {
+            return response([
+                'status' => 'error',
+                'message' => 'Failed to expire payment.',
+            ], 500);
+        }
     }
 
     public function updatePaymentStatus(Request $request)
     {
         $request->validate([
-            'order_id' => 'required|integer',
+            'order_id' => 'required|integer|exists:orders,id',
         ]);
 
         $payment = Payment::where('order_id', $request->order_id)->first();
@@ -162,7 +174,7 @@ class PaymentController extends Controller
     public function getInvoiceUser(Request $request)
     {
         $request->validate([
-            'order_id' => 'required|integer',
+            'order_id' => 'required|integer|exists:orders,id',
         ]);
 
         $payment = Payment::where('order_id', $request->order_id)->first();
@@ -186,4 +198,3 @@ class PaymentController extends Controller
         ], 200);
     }
 }
-
