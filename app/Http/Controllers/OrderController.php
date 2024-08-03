@@ -19,7 +19,7 @@ class OrderController extends Controller
         $order = Order::create([
             'order_type' => $request->order_type,
             'order_number' => $nomor_pemesanan,
-            'detail_address' => $request->detail_address, // Ubah dari 'address' ke 'detail_address'
+            'detail_address' => $request->detail_address,
             'phone' => $request->phone,
             'total_price' => $request->total_price,
             'pickup_date' => $request->pickup_date,
@@ -27,6 +27,8 @@ class OrderController extends Controller
             'order_status' => $orderStatus,
             'laundry_id' => $request->laundry_id,
             'user_id' => $request->user_id,
+            'kabupaten' => $request->kabupaten,
+            'kecamatan' => $request->kecamatan,
         ]);
 
         return response()->json([
@@ -39,12 +41,14 @@ class OrderController extends Controller
     {
         $request->validate([
             'id' => 'required|integer|exists:orders,id',
-            'detail_address' => 'sometimes|required|string|max:255', // Ubah dari 'address' ke 'detail_address'
+            'detail_address' => 'sometimes|required|string|max:255',
             'phone' => 'sometimes|required|string|max:255',
             'total_price' => 'sometimes|required|numeric',
             'pickup_date' => 'sometimes|required|date',
             'notes' => 'sometimes|nullable|string|max:255',
             'order_status' => 'sometimes|nullable|string|in:pending,driver on the way to location,shoe being cleaned,completed,decline',
+            'kabupaten' => 'sometimes|required|string|max:255',
+            'kecamatan' => 'sometimes|required|string|max:255',
         ]);
 
         $order = Order::find($request->id);
@@ -55,12 +59,14 @@ class OrderController extends Controller
         }
 
         $order->update($request->only([
-            'detail_address', // Ubah dari 'address' ke 'detail_address'
-            'phone', 
-            'total_price', 
-            'pickup_date', 
-            'notes', 
-            'order_status'
+            'detail_address',
+            'phone',
+            'total_price',
+            'pickup_date',
+            'notes',
+            'order_status',
+            'kabupaten',
+            'kecamatan',
         ]));
 
         return response()->json([
@@ -139,24 +145,23 @@ class OrderController extends Controller
             'order' => $order,
         ]);
     }
-    
+
     public function getOrdersByStatus($status)
-{
-    $user = auth()->user();
-    $orders = Order::where('user_id', $user->id)
-                   ->where('order_status', $status)
-                   ->get();
+    {
+        $user = auth()->user();
+        $orders = Order::where('user_id', $user->id)
+                       ->where('order_status', $status)
+                       ->get();
 
-    if ($orders->isEmpty()) {
+        if ($orders->isEmpty()) {
+            return response()->json([
+                'message' => 'No orders found with the specified status',
+            ], 404);
+        }
+
         return response()->json([
-            'message' => 'No orders found with the specified status',
-        ], 404);
+            'message' => 'Orders with status: ' . $status,
+            'data' => $orders,
+        ], 200);
     }
-
-    return response()->json([
-        'message' => 'Orders with status: ' . $status,
-        'data' => $orders,
-    ], 200);
-}
-
 }

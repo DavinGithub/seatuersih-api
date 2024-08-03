@@ -11,12 +11,10 @@ class KabupatenController extends Controller
     {
         $request->validate([
             'kabupaten' => 'required|string|max:255',
-            'laundry_id' => 'required|integer|exists:laundries,id',
         ]);
 
         $kabupaten = Kabupaten::create([
             'kabupaten' => $request->kabupaten,
-            'laundry_id' => $request->laundry_id,
         ]);
 
         return response()->json([
@@ -30,7 +28,6 @@ class KabupatenController extends Controller
         $request->validate([
             'id' => 'required|integer|exists:kabupatens,id',
             'kabupaten' => 'sometimes|required|string|max:255',
-            'laundry_id' => 'sometimes|required|integer|exists:laundries,id',
         ]);
 
         $kabupaten = Kabupaten::find($request->id);
@@ -64,28 +61,6 @@ class KabupatenController extends Controller
         ], 200);
     }
 
-    public function getKabupatens(Request $request)
-    {
-        $laundry_id = $request->input('laundry_id');
-
-        if ($laundry_id) {
-            $kabupatens = Kabupaten::where('laundry_id', $laundry_id)->get();
-        } else {
-            $kabupatens = Kabupaten::all();
-        }
-
-        if ($kabupatens->isEmpty()) {
-            return response()->json([
-                'message' => 'No kabupatens found',
-            ], 200);
-        }
-
-        return response()->json([
-            'message' => 'Kabupatens list',
-            'data' => $kabupatens,
-        ], 200);
-    }
-
     public function getKabupaten($id)
     {
         $kabupaten = Kabupaten::find($id);
@@ -98,6 +73,22 @@ class KabupatenController extends Controller
         return response()->json([
             'message' => 'Kabupaten details',
             'data' => $kabupaten,
+        ], 200);
+    }
+
+    public function getKabupatens()
+    {
+        $kabupatens = Kabupaten::all();
+
+        if ($kabupatens->isEmpty()) {
+            return response()->json([
+                'message' => 'No kabupatens found',
+            ], 200);
+        }
+
+        return response()->json([
+            'message' => 'Kabupatens list',
+            'data' => $kabupatens,
         ], 200);
     }
 }

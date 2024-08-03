@@ -20,6 +20,8 @@ class Order extends Model
         'order_status',
         'user_id',
         'laundry_id',
+        'kabupaten',
+        'kecamatan',
     ];
 
     protected $casts = [
@@ -29,7 +31,6 @@ class Order extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
-        
     }
 
     public function laundry()
