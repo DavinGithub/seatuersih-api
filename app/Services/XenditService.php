@@ -50,6 +50,6 @@ class XenditService
      */
     public function expireInvoice(string $invoiceId)
     {
-        return $this->xenditApi->post("{$this->xenditApiUrl}/invoices/{$invoiceId}/expire!");
+        return $this->xenditApi->get("{$this->xenditApiUrl}/invoices/{$invoiceId}/expire!");
     }
 }
