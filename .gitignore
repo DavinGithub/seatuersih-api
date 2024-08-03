@@ -10,6 +10,7 @@
 .env.production
 .phpactor.json
 .phpunit.result.cache
+firebase-auth.json
 Homestead.json
 Homestead.yaml
 auth.json
