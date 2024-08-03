@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('notes')->nullable();
             $table->unsignedBigInteger('laundry_id');
             $table->unsignedBigInteger('user_id'); 
+            $table->string('kabupaten');
+            $table->string('kecamatan');
             $table->enum('order_status', [
                 'pending',
                 'driver on the way to location',

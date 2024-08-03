@@ -11,12 +11,10 @@ class KecamatanController extends Controller
     {
         $request->validate([
             'kecamatan' => 'required|string|max:255',
-            'laundry_id' => 'required|integer|exists:laundries,id',
         ]);
 
         $kecamatan = Kecamatan::create([
             'kecamatan' => $request->kecamatan,
-            'laundry_id' => $request->laundry_id,
         ]);
 
         return response()->json([
@@ -30,7 +28,6 @@ class KecamatanController extends Controller
         $request->validate([
             'id' => 'required|integer|exists:kecamatans,id',
             'kecamatan' => 'sometimes|required|string|max:255',
-            'laundry_id' => 'sometimes|required|integer|exists:laundries,id',
         ]);
 
         $kecamatan = Kecamatan::find($request->id);
@@ -98,23 +95,6 @@ class KecamatanController extends Controller
         return response()->json([
             'message' => 'Kecamatan details',
             'data' => $kecamatan,
-        ], 200);
-    }
-
-    // Method to get kecamatans by laundry_id
-    public function getKecamatansByLaundryId($laundry_id)
-    {
-        $kecamatans = Kecamatan::where('laundry_id', $laundry_id)->get();
-
-        if ($kecamatans->isEmpty()) {
-            return response()->json([
-                'message' => 'No kecamatans found for the specified laundry ID',
-            ], 200);
-        }
-
-        return response()->json([
-            'message' => 'Kecamatans list for laundry ID ' . $laundry_id,
-            'data' => $kecamatans,
         ], 200);
     }
 }

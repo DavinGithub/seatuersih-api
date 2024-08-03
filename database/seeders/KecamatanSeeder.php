@@ -13,27 +13,15 @@ class KecamatanSeeder extends Seeder
     public function run(): void
     {
         $data = [
-            // Data untuk laundry_id 1
-            ['kecamatan' => 'Kecamatan Bae', 'laundry_id' => 1],
-            ['kecamatan' => 'Kecamatan Dawe', 'laundry_id' => 1],
-            ['kecamatan' => 'Kecamatan Gebog', 'laundry_id' => 1],
-            ['kecamatan' => 'Kecamatan Jati', 'laundry_id' => 1],
-            ['kecamatan' => 'Kecamatan Jekulo', 'laundry_id' => 1],
-            ['kecamatan' => 'Kecamatan Kaliwungu', 'laundry_id' => 1],
-            ['kecamatan' => 'Kecamatan Kudus', 'laundry_id' => 1],
-            ['kecamatan' => 'Kecamatan Mejobo', 'laundry_id' => 1],
-            ['kecamatan' => 'Kecamatan Undaan', 'laundry_id' => 1],
-
-            // Data untuk laundry_id 2
-            ['kecamatan' => 'Kecamatan Bae', 'laundry_id' => 2],
-            ['kecamatan' => 'Kecamatan Dawe', 'laundry_id' => 2],
-            ['kecamatan' => 'Kecamatan Gebog', 'laundry_id' => 2],
-            ['kecamatan' => 'Kecamatan Jati', 'laundry_id' => 2],
-            ['kecamatan' => 'Kecamatan Jekulo', 'laundry_id' => 2],
-            ['kecamatan' => 'Kecamatan Kaliwungu', 'laundry_id' => 2],
-            ['kecamatan' => 'Kecamatan Kudus', 'laundry_id' => 2],
-            ['kecamatan' => 'Kecamatan Mejobo', 'laundry_id' => 2],
-            ['kecamatan' => 'Kecamatan Undaan', 'laundry_id' => 2],
+            ['kecamatan' => 'Kecamatan Bae'],
+            ['kecamatan' => 'Kecamatan Dawe'],
+            ['kecamatan' => 'Kecamatan Gebog'],
+            ['kecamatan' => 'Kecamatan Jati'],
+            ['kecamatan' => 'Kecamatan Jekulo'],
+            ['kecamatan' => 'Kecamatan Kaliwungu'],
+            ['kecamatan' => 'Kecamatan Kudus'],
+            ['kecamatan' => 'Kecamatan Mejobo'],
+            ['kecamatan' => 'Kecamatan Undaan'],
         ];
 
         DB::table('kecamatans')->insert($data);

@@ -18,14 +18,6 @@ class KabupatenSeeder extends Seeder
             [
                 'id' => 1,
                 'kabupaten' => 'Kudus',
-                'laundry_id' => 1, 
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'id' => 2,
-                'kabupaten' => 'Kudus',
-                'laundry_id' => 2, 
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

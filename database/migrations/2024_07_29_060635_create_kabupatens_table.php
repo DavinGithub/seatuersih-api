@@ -14,10 +14,8 @@ return new class extends Migration
         Schema::create('kabupatens', function (Blueprint $table) {
             $table->id();
             $table->string('kabupaten');
-            $table->unsignedBigInteger('laundry_id');
             $table->timestamps();
 
-            $table->foreign('laundry_id')->references('id')->on('laundries')->onDelete('cascade'); 
         });
     }
 
@@ -26,9 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('brands', function (Blueprint $table) {
-            $table->dropForeign(['laundry_id']);
-        });
         Schema::dropIfExists('kabupatens');
     }
 };

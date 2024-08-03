@@ -31,6 +31,8 @@ class AddOrderRequest extends FormRequest
             'pickup_date' => 'required|date',
             'notes' => 'nullable|string|max:255',
             'order_status' => 'nullable|string|in:pending,driver on the way to location,shoe being cleaned,completed,decline',
+            'kabupaten' => 'required|string|max:255',
+            'kecamatan' => 'required|string|max:255',
         ];
     }
 }

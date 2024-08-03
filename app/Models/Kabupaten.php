@@ -11,11 +11,6 @@ class Kabupaten extends Model
 
     protected $fillable = [
        'kabupaten',
-       'laundry_id'
     ];
 
-    public function laundry()
-    {
-        return $this->belongsTo(Laundry::class);
-    }
 }
