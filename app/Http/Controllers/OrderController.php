@@ -46,7 +46,7 @@ class OrderController extends Controller
             'total_price' => 'sometimes|required|numeric',
             'pickup_date' => 'sometimes|required|date',
             'notes' => 'sometimes|nullable|string|max:255',
-            'order_status' => 'sometimes|nullable|string|in:pending,driver on the way to location,shoe being cleaned,completed,decline',
+            'order_status' => 'sometimes|nullable|string|in:pending,in-progress,completed,decline',
             'kabupaten' => 'sometimes|required|string|max:255',
             'kecamatan' => 'sometimes|required|string|max:255',
         ]);

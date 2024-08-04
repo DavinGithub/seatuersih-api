@@ -26,8 +26,7 @@ return new class extends Migration
             $table->string('kecamatan');
             $table->enum('order_status', [
                 'pending',
-                'driver on the way to location',
-                'shoe being cleaned',
+                'in-progress',
                 'completed',
                 'decline'
             ])->default('pending');
