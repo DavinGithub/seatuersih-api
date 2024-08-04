@@ -31,6 +31,8 @@ class OrderController extends Controller
             'kecamatan' => $request->kecamatan,
         ]);
 
+        $order->load('user');
+
         return response()->json([
             'message' => 'Order added successfully',
             'order' => $order,
@@ -69,6 +71,8 @@ class OrderController extends Controller
             'kecamatan',
         ]));
 
+        $order->load('user'); // Eager loading user relationship
+
         return response()->json([
             'message' => 'Order updated successfully',
             'order' => $order,
@@ -94,7 +98,7 @@ class OrderController extends Controller
     public function getOrders()
     {
         $user = auth()->user();
-        $orders = Order::where('user_id', $user->id)->get();
+        $orders = Order::with('user')->where('user_id', $user->id)->get();
         if ($orders->isEmpty()) {   
             return response()->json([
                 'message' => 'No orders found',
@@ -109,7 +113,7 @@ class OrderController extends Controller
 
     public function getOrder($id)
     {
-        $order = Order::find($id);
+        $order = Order::with('user')->find($id);
         if (!$order) {
             return response()->json([
                 'message' => 'Order not found',
@@ -140,6 +144,8 @@ class OrderController extends Controller
         $order->total_price = $totalPrice;
         $order->save();
     
+        $order->load('user'); // Eager loading user relationship
+    
         return response()->json([
             'message' => 'Checkout success',
             'order' => $order,
@@ -149,7 +155,7 @@ class OrderController extends Controller
     public function getOrdersByStatus($status)
     {
         $user = auth()->user();
-        $orders = Order::where('user_id', $user->id)
+        $orders = Order::with('user')->where('user_id', $user->id)
                        ->where('order_status', $status)
                        ->get();
 
