@@ -207,4 +207,14 @@ class UserController extends Controller
             'user' => $user,
         ], 200);
     }
+
+    public function getAllUsers()
+{
+    $users = User::all();
+
+    return response([
+        'users' => $users,
+    ], 200);
+}
+
 }
