@@ -27,7 +27,14 @@ class LaundryController extends Controller
 
     public function getLaundries()
     {
-        $laundries = Laundry::all();
+        $laundries = Laundry::with('reviews')->get();
+        
+        $laundries->each(function ($laundry) {
+            $averageRating = $laundry->reviews()->avg('rating');
+            $laundry->makeHidden('reviews');
+            $laundry->average_rating = number_format($averageRating, 1);
+        });
+
         return response()->json([
             'message' => 'Laundries fetched successfully',
             'laundries' => $laundries,
@@ -36,18 +43,24 @@ class LaundryController extends Controller
 
     public function getLaundry($id)
     {
-        $laundry = Laundry::find($id);
+        $laundry = Laundry::with('reviews')->find($id);
         if (!$laundry) {
             return response()->json([
                 'message' => 'Laundry not found',
             ], 404);
         }
 
+        $averageRating = $laundry->reviews()->avg('rating');
+        $laundry->average_rating = number_format($averageRating, 1);
+
+        unset($laundry->reviews);
+
         return response()->json([
             'message' => 'Laundry fetched successfully',
             'laundry' => $laundry,
         ], 200);
     }
+
 
     public function updateLaundry(Request $request, $id)
     {

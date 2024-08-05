@@ -14,6 +14,7 @@ class Review extends Model
         'review',
         'rating',
         'user_id',
+        'review_date',
         'laundry_id'
     ];
 

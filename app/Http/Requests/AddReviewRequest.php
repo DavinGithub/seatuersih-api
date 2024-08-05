@@ -16,8 +16,8 @@ class AddReviewRequest extends FormRequest
         return [
             'order_type' => 'required|string|in:Regular Clean,Deep Clean',
             'review' => 'required|string',
-            'rating' => 'required|numeric|min:0.5|max:5', 
-        
+            'rating' => 'required|numeric|min:0.5|max:5',
+            'laundry_id' => 'required|exists:laundries,id' 
         ];
     }
 }
