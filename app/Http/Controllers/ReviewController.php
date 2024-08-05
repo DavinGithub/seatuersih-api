@@ -17,7 +17,8 @@ class ReviewController extends Controller
             'review' => $request->review,
             'rating' => $request->rating,
             'user_id' => $user->id,
-            'laundry_id' => $request->laundry_id, // Ubah dari order_id ke laundry_id
+            'laundry_id' => $request->laundry_id, 
+            'review_date' => now()
         ]);
 
         return response()->json([
@@ -38,6 +39,8 @@ class ReviewController extends Controller
     public function getReviews($laundryId) // Ubah dari orderId ke laundryId
     {
         $reviews = Review::where('laundry_id', $laundryId)->get();
+        
+        $reviews->load('user');
 
         return response()->json([
             'reviews' => $reviews,

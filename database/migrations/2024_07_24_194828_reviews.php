@@ -16,6 +16,7 @@ return new class extends Migration
             $table->enum('order_type', ['Regular Clean','Deep Clean']);
             $table->text('review');
             $table->decimal('rating', 3, 1);
+            $table->date('review_date');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('laundry_id'); // Changed to laundry_id
             $table->timestamps();

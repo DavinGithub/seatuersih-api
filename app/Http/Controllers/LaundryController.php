@@ -35,19 +35,24 @@ class LaundryController extends Controller
     }
 
     public function getLaundry($id)
-    {
-        $laundry = Laundry::find($id);
-        if (!$laundry) {
-            return response()->json([
-                'message' => 'Laundry not found',
-            ], 404);
-        }
-
+{
+    $laundry = Laundry::find($id);
+    if (!$laundry) {
         return response()->json([
-            'message' => 'Laundry fetched successfully',
-            'laundry' => $laundry,
-        ], 200);
+            'message' => 'Laundry not found',
+        ], 404);
     }
+
+    // Hitung rata-rata rating untuk laundry ini
+    $averageRating = $laundry->reviews()->avg('rating');
+
+    return response()->json([
+        'message' => 'Laundry fetched successfully',
+        'laundry' => $laundry,
+        'average_rating' => number_format($averageRating, 1),
+    ], 200);
+}
+
 
     public function updateLaundry(Request $request, $id)
     {
