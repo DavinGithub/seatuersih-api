@@ -17,7 +17,8 @@ use App\Http\Controllers\PaymentController;
 Route::group(['prefix' => 'users'], function () {
     Route::post('/register', [UserController::class, 'register']);
     Route::post('/login', [UserController::class, 'login']);
-    Route::get('/all', [UserController::class, 'details'])->middleware('auth:sanctum');
+    Route::get('/detail', [UserController::class, 'details'])->middleware('auth:sanctum');
+    Route::get('/all', [UserController::class, 'getAllUsers']);
     Route::post('/update-profile-picture', [UserController::class, 'updateProfilePicture'])->middleware('auth:sanctum');
     Route::delete('/logout', [UserController::class, 'logout'])->middleware('auth:sanctum');
     Route::post('/send-otp', [OtpController::class, 'sendOtp'])->middleware('auth:sanctum');
