@@ -20,6 +20,7 @@ class UserController extends Controller
             'email' => $request->email,
             'phone' => $request->phone,
             'password' => Hash::make($request->password),
+            'notification_token' => $request->notification_token,
         ];
 
         if ($request->hasFile('profile_picture')) {
@@ -37,24 +38,28 @@ class UserController extends Controller
     }
 
     public function login(LoginRequests $request)
-    {
-        $request->validated();
+{
+    $request->validated();
 
-        $user = User::where('email', $request->email)->first();
-
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            return response([
-                'message' => 'Email atau kata sandi salah',
-            ], 401);
-        }
-
-        $token = $user->createToken('seatuersih')->plainTextToken;
-
+    $user = User::where('email', $request->email)->first();
+    if (!$user || !Hash::check($request->password, $user->password)) {
         return response([
-            'user' => $user,
-            'token' => $token,
-        ], 200);
+            'message' => 'Email atau kata sandi salah',
+        ], 401);
     }
+
+    // Menetapkan dan menyimpan notification_token
+    $user->notification_token = $request->notification_token;
+    $user->save();
+
+    $token = $user->createToken('seatuersih')->plainTextToken;
+
+    return response([
+        'user' => $user,
+        'token' => $token,
+    ], 200);
+}
+
 
     public function details()
     {
