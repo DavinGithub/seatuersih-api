@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AddOrderRequest;
+use App\Services\FirebaseService;
 use App\Models\Order;
 use App\Models\Shoe;
 use Illuminate\Http\Request;
@@ -54,11 +55,7 @@ class OrderController extends Controller
         ]);
 
         $order = Order::find($request->id);
-        if (!$order) {
-            return response()->json([
-                'message' => 'Order not found',
-            ], 404);
-        }
+        $previousStatus = $order->order_status; // Simpan status sebelumnya
 
         $order->update($request->only([
             'detail_address',
@@ -71,7 +68,29 @@ class OrderController extends Controller
             'kecamatan',
         ]));
 
-        $order->load('user'); // Eager loading user relationship
+        // Kirim push notification jika status order berubah
+        if ($order->wasChanged('order_status')) {
+            $user = $order->user;
+            $title = 'Pembaruan Pesanan';
+            $body = ''; // Inisialisasi body notifikasi
+            $imageUrl = 'https://example.com/image.jpg'; // Ganti dengan URL gambar Anda
+
+            // Tentukan pesan notifikasi berdasarkan perubahan status
+            if ($previousStatus === 'pending' && $order->order_status === 'in-progress') {
+                $body = 'Pesanan diterima, sepatu Anda sedang di proses!';
+            } elseif ($previousStatus === 'in-progress' && $order->order_status === 'completed') {
+                $body = 'Sepatu Anda sudah selesai dibersihkan!';
+            } elseif ($previousStatus === 'pending' && $order->order_status === 'decline') {
+                $body = 'Maaf, pesanan Anda ditolak!';
+            }
+
+            if (!empty($body)) { // Kirim notifikasi jika ada pesan
+                $firebaseService = new FirebaseService();
+                $firebaseService->sendNotification($user->notification_token, $title, $body, $imageUrl);
+            }
+        }
+
+        $order->load('user');
 
         return response()->json([
             'message' => 'Order updated successfully',
@@ -120,7 +139,7 @@ class OrderController extends Controller
             ], 404);
         }
 
-        return response()->json([
+        return response()->json([   
             'message' => 'Order details',
             'data' => $order,
         ], 200);
