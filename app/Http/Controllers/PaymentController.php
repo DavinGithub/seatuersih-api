@@ -184,5 +184,25 @@ class PaymentController extends Controller
             ]),
         ], 200);
     }
-}
+    
+    public function getAllPaymentHistories()
+{
+    $payments = Payment::with('order.user')->get(['user_id', 'order_id', 'created_at', 'status']);
 
+    $paymentHistories = $payments->map(function ($payment) {
+        return [
+            'user_id' => $payment->user_id,
+            'order_id' => $payment->order_id,
+            'order_date' => $payment->order->pickup_date,
+            'total_price' => $payment->order->total_price,
+            'order_type' => $payment->order->order_type,
+            'user' => $payment->order->user // Pastikan ini memuat user
+        ];
+    });
+
+    return response()->json([
+        'status' => 'success',
+        'data' => $paymentHistories,
+    ], 200);
+}
+}
