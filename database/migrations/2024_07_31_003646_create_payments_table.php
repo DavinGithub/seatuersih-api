@@ -20,10 +20,12 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('order_id');
             $table->timestamps();
-
+            $table->timestamp('payment_date')->nullable();
+        
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
         });
+        
     }
 
     /**
@@ -34,7 +36,9 @@ return new class extends Migration
         Schema::table('payments', function (Blueprint $table) {
             $table->dropForeign(['user_id']);
             $table->dropForeign(['order_id']);
+            $table->dropColumn('payment_date');
         });
         Schema::dropIfExists('payments');
+        
     }
 };

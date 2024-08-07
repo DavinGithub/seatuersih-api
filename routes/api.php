@@ -56,7 +56,8 @@ Route::group(['prefix' => 'order', 'middleware' => 'auth:sanctum'], function () 
     Route::get('/getall', [OrderController::class, 'getOrders']);
     Route::get('/get/{id}', [OrderController::class, 'getOrder']);
     Route::post('/checkout', [OrderController::class, 'checkout']);
-    Route::get('/status/{status}', [OrderController::class, 'getOrdersByStatus']);
+    Route::get('/status/{status}', [OrderController::class, 'getOrdersByStatus']);  
+    Route::get('/sales/{orderType}', [OrderController::class, 'getSalesByOrderType']);
 });
 
 Route::group(['prefix' => 'review', 'middleware' => 'auth:sanctum'], function () {
@@ -104,4 +105,6 @@ Route::group(['prefix' => 'payment', 'middleware' => 'auth:sanctum'], function()
     Route::post('/update', [PaymentController::class, 'updatePaymentStatus']);
     Route::delete('/expire/{id}', [PaymentController::class, 'expirePayment']);
     Route::get('/get', [PaymentController::class, 'getInvoiceUser']);
+    Route::get('/get/all', [PaymentController::class, 'getAllPayments']);
+
 } );

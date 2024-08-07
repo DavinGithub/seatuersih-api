@@ -34,7 +34,7 @@ class ReviewController extends Controller
         return response()->json([
             'average_rating' => number_format($averageRating, 1),
         ]);
-    }
+    }   
 
     public function getReviews($laundryId) // Ubah dari orderId ke laundryId
     {

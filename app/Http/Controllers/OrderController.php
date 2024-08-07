@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AddOrderRequest;
 use App\Services\FirebaseService;
 use App\Models\Order;
+use Carbon\Carbon;
 use App\Models\Shoe;
 use Illuminate\Http\Request;
 
@@ -188,5 +189,44 @@ class OrderController extends Controller
             'message' => 'Orders with status: ' . $status,
             'data' => $orders,
         ], 200);
+    }
+
+      public function getSalesByOrderType(Request $request, $orderType)
+    {
+        // Validasi orderType
+        $validOrderTypes = ['regular_clean', 'deep_clean'];
+        if (!in_array($orderType, $validOrderTypes)) {
+            return response()->json([
+                'message' => 'Invalid order type',
+            ], 400);
+        }
+
+        $today = Carbon::now()->startOfDay();
+        $weekStart = Carbon::now()->startOfWeek();
+        $monthStart = Carbon::now()->startOfMonth();
+
+        // Data penjualan hari ini
+        $todaySales = $this->getSalesByDateRange($orderType, $today, $today);
+        // Data penjualan minggu ini
+        $weekSales = $this->getSalesByDateRange($orderType, $weekStart, Carbon::now()->endOfWeek());
+        // Data penjualan bulan ini
+        $monthSales = $this->getSalesByDateRange($orderType, $monthStart, Carbon::now()->endOfMonth());
+
+        return response()->json([
+            'message' => 'Sales data retrieved successfully',
+            'data' => [
+                'order_type' => $orderType,
+                'today' => $todaySales,
+                'week' => $weekSales,
+                'month' => $monthSales,
+            ],
+        ], 200);
+    }
+
+    private function getSalesByDateRange($orderType, $startDate, $endDate)
+    {
+        return Order::where('order_type', $orderType)
+            ->whereBetween('pickup_date', [$startDate, $endDate])
+            ->count();
     }
 }
