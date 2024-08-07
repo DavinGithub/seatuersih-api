@@ -199,20 +199,35 @@ class UserController extends Controller
             'username' => 'required|string',
             'email' => 'required|string|email',
             'phone' => 'required|string',
+            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Tambahkan validasi untuk profile_picture
         ]);
-
+    
         $user = User::where('id', auth()->user()->id)->first();
         $user->username = $request->username;
         $user->email = $request->email;
         $user->phone = $request->phone;
+    
+        // Proses profile_picture jika ada
+        if ($request->hasFile('profile_picture')) {
+            // Hapus gambar lama jika ada
+            if ($user->profile_picture) {
+                Storage::delete($user->profile_picture);
+            }
+    
+            // Simpan gambar baru
+            $imagePath = $request->file('profile_picture')->store('profile_pictures');
+            $user->profile_picture = $imagePath;
+        }
+    
         $user->save();
+    
         return response([
             'status' => 'success',
             'message' => 'Change user detail successfully',
             'user' => $user,
         ], 200);
     }
-
+    
     public function getAllUsers()
 {
     $users = User::all();
