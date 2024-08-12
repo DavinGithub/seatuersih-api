@@ -10,7 +10,12 @@ class Kecamatan extends Model
     use HasFactory;
 
     protected $fillable = [
-       'kecamatan',
+        'kecamatan',
+        'kabupaten_id',
     ];
 
+    public function kabupaten()
+    {
+        return $this->belongsTo(Kabupaten::class);
+    }
 }

@@ -13,15 +13,15 @@ class KecamatanSeeder extends Seeder
     public function run(): void
     {
         $data = [
-            ['kecamatan' => 'Kecamatan Bae'],
-            ['kecamatan' => 'Kecamatan Dawe'],
-            ['kecamatan' => 'Kecamatan Gebog'],
-            ['kecamatan' => 'Kecamatan Jati'],
-            ['kecamatan' => 'Kecamatan Jekulo'],
-            ['kecamatan' => 'Kecamatan Kaliwungu'],
-            ['kecamatan' => 'Kecamatan Kudus'],
-            ['kecamatan' => 'Kecamatan Mejobo'],
-            ['kecamatan' => 'Kecamatan Undaan'],
+            ['kecamatan' => 'Kecamatan Bae', 'kabupaten_id' => 1],
+            ['kecamatan' => 'Kecamatan Dawe', 'kabupaten_id' => 1],
+            ['kecamatan' => 'Kecamatan Gebog', 'kabupaten_id' => 1],
+            ['kecamatan' => 'Kecamatan Jati', 'kabupaten_id' => 1],
+            ['kecamatan' => 'Kecamatan Jekulo', 'kabupaten_id' => 1],
+            ['kecamatan' => 'Kecamatan Kaliwungu', 'kabupaten_id' => 1],
+            ['kecamatan' => 'Kecamatan Kudus', 'kabupaten_id' => 1],
+            ['kecamatan' => 'Kecamatan Mejobo', 'kabupaten_id' => 1],
+            ['kecamatan' => 'Kecamatan Undaan', 'kabupaten_id' => 1],
         ];
 
         DB::table('kecamatans')->insert($data);

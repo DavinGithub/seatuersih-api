@@ -10,7 +10,11 @@ class Kabupaten extends Model
     use HasFactory;
 
     protected $fillable = [
-       'kabupaten',
+        'kabupaten',
     ];
 
+    public function kecamatans()
+    {
+        return $this->hasMany(Kecamatan::class);
+    }
 }
