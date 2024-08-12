@@ -6,44 +6,47 @@ use App\Models\Kecamatan;
 use Illuminate\Http\Request;
 
 class KecamatanController extends Controller
-{
-    public function addKecamatan(Request $request)
-    {
-        $request->validate([
-            'kecamatan' => 'required|string|max:255',
-        ]);
-
-        $kecamatan = Kecamatan::create([
-            'kecamatan' => $request->kecamatan,
-        ]);
-
-        return response()->json([
-            'message' => 'Kecamatan added successfully',
-            'kecamatan' => $kecamatan,
-        ], 201);
-    }
-
-    public function updateKecamatan(Request $request)
-    {
-        $request->validate([
-            'id' => 'required|integer|exists:kecamatans,id',
-            'kecamatan' => 'sometimes|required|string|max:255',
-        ]);
-
-        $kecamatan = Kecamatan::find($request->id);
-        if (!$kecamatan) {
+{   
+        public function addKecamatan(Request $request)
+        {
+            $request->validate([
+                'kecamatan' => 'required|string|max:255',
+                'kabupaten_id' => 'required|integer|exists:kabupatens,id',
+            ]);
+    
+            $kecamatan = Kecamatan::create([
+                'kecamatan' => $request->kecamatan,
+                'kabupaten_id' => $request->kabupaten_id,
+            ]);
+    
             return response()->json([
-                'message' => 'Kecamatan not found',
-            ], 404);
+                'message' => 'Kecamatan added successfully',
+                'kecamatan' => $kecamatan,
+            ], 201);
         }
-
-        $kecamatan->update($request->all());
-
-        return response()->json([
-            'message' => 'Kecamatan updated successfully',
-            'kecamatan' => $kecamatan,
-        ], 200);
-    }
+    
+        public function updateKecamatan(Request $request)
+        {
+            $request->validate([
+                'id' => 'required|integer|exists:kecamatans,id',
+                'kecamatan' => 'sometimes|required|string|max:255',
+                'kabupaten_id' => 'sometimes|required|integer|exists:kabupatens,id',
+            ]);
+    
+            $kecamatan = Kecamatan::find($request->id);
+            if (!$kecamatan) {
+                return response()->json([
+                    'message' => 'Kecamatan not found',
+                ], 404);
+            }
+    
+            $kecamatan->update($request->all());
+    
+            return response()->json([
+                'message' => 'Kecamatan updated successfully',
+                'kecamatan' => $kecamatan,
+            ], 200);
+        }
 
     public function deleteKecamatan($id)
     {
