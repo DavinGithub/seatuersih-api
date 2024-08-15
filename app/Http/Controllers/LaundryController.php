@@ -29,10 +29,10 @@ class LaundryController extends Controller
     {
         $laundries = Laundry::with('reviews')->get();
         
-        $laundries->each(function ($laundry) {
-            $averageRating = $laundry->reviews()->avg('rating');
-            $laundry->makeHidden('reviews');
-            $laundry->average_rating = number_format($averageRating, 1);
+            $laundries->each(function ($laundry) {
+                $averageRating = $laundry->reviews()->avg('rating');
+                $laundry->makeHidden('reviews');
+                $laundry->average_rating = number_format($averageRating, 1);
         });
 
         return response()->json([

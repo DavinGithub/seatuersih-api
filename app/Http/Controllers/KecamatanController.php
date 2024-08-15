@@ -20,7 +20,7 @@ class KecamatanController extends Controller
             ]);
     
             return response()->json([
-                'message' => 'Kecamatan added successfully',
+                'message' => 'K ecamatan added successfully',
                 'kecamatan' => $kecamatan,
             ], 201);
         }
@@ -98,6 +98,21 @@ class KecamatanController extends Controller
         return response()->json([
             'message' => 'Kecamatan details',
             'data' => $kecamatan,
+        ], 200);
+    }
+    public function getKecamatanByKabupatenId($kabupaten_id)
+    {
+        $kecamatans = Kecamatan::where('kabupaten_id', $kabupaten_id)->get();
+
+        if ($kecamatans->isEmpty()) {
+            return response()->json([
+                'message' => 'No kecamatans found for the given kabupaten_id',
+            ], 200);
+        }
+
+        return response()->json([
+            'message' => 'Kecamatans list for the given kabupaten_id',
+            'data' => $kecamatans,
         ], 200);
     }
 }
