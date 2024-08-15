@@ -189,44 +189,72 @@ class OrderController extends Controller
             'message' => 'Orders with status: ' . $status,
             'data' => $orders,
         ], 200);
+    } 
+      
+    public function getChart()
+{
+    $today = Carbon::today();
+    $lastMonth = $today->copy()->subDays(30);
+
+    $data = Order::selectRaw('DATE(created_at) as date, COUNT(*) as total')
+        ->whereBetween('created_at', [$lastMonth->format('Y-m-d 00:00:00'), $today->format('Y-m-d 23:59:59')])
+        ->groupBy('date')
+        ->orderBy('date', 'asc')
+        ->get();
+
+    $dates = [];
+    $currentDate = $lastMonth->copy();
+    while ($currentDate->lte($today)) {
+        $dates[$currentDate->format('Y-m-d')] = 0;
+        $currentDate->addDay();
     }
 
-      public function getSalesByOrderType(Request $request, $orderType)
-    {
-        // Validasi orderType
-        $validOrderTypes = ['regular_clean', 'deep_clean'];
-        if (!in_array($orderType, $validOrderTypes)) {
-            return response()->json([
-                'message' => 'Invalid order type',
-            ], 400);
-        }
-
-        $today = Carbon::now()->startOfDay();
-        $weekStart = Carbon::now()->startOfWeek();
-        $monthStart = Carbon::now()->startOfMonth();
-
-        // Data penjualan hari ini
-        $todaySales = $this->getSalesByDateRange($orderType, $today, $today);
-        // Data penjualan minggu ini
-        $weekSales = $this->getSalesByDateRange($orderType, $weekStart, Carbon::now()->endOfWeek());
-        // Data penjualan bulan ini
-        $monthSales = $this->getSalesByDateRange($orderType, $monthStart, Carbon::now()->endOfMonth());
-
-        return response()->json([
-            'message' => 'Sales data retrieved successfully',
-            'data' => [
-                'order_type' => $orderType,
-                'today' => $todaySales,
-                'week' => $weekSales,
-                'month' => $monthSales,
-            ],
-        ], 200);
+    foreach ($data as $entry) {
+        $dates[$entry->date] = $entry->total;
     }
 
-    private function getSalesByDateRange($orderType, $startDate, $endDate)
-    {
-        return Order::where('order_type', $orderType)
-            ->whereBetween('pickup_date', [$startDate, $endDate])
-            ->count();
+    $formattedData = collect($dates)->map(function ($total, $date) {
+        return [
+            'date' => $date,
+            'total' => $total
+        ];
+    })->values();
+
+    return response()->json($formattedData);
+}
+
+public function getChartByOrderType($orderType)
+{
+    $today = Carbon::today();
+    $lastMonth = $today->copy()->subDays(30);
+
+    $data = Order::selectRaw('DATE(created_at) as date, COUNT(*) as total')
+        ->where('order_type', $orderType)
+        ->whereBetween('created_at', [$lastMonth->format('Y-m-d 00:00:00'), $today->format('Y-m-d 23:59:59')])
+        ->groupBy('date')
+        ->orderBy('date', 'asc')
+        ->get();
+
+    $dates = [];
+    $currentDate = $lastMonth->copy();
+    while ($currentDate->lte($today)) {
+        $dates[$currentDate->format('Y-m-d')] = 0;
+        $currentDate->addDay();
     }
+
+    foreach ($data as $entry) {
+        $dates[$entry->date] = $entry->total;
+    }
+
+    $formattedData = collect($dates)->map(function ($total, $date) {
+        return [
+            'date' => $date,
+            'total' => $total
+        ];
+    })->values();
+
+    return response()->json($formattedData);
+}
+
+
 }

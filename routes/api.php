@@ -57,7 +57,8 @@ Route::group(['prefix' => 'order', 'middleware' => 'auth:sanctum'], function () 
     Route::get('/get/{id}', [OrderController::class, 'getOrder']);
     Route::post('/checkout', [OrderController::class, 'checkout']);
     Route::get('/status/{status}', [OrderController::class, 'getOrdersByStatus']);  
-    Route::get('/sales/{orderType}', [OrderController::class, 'getSalesByOrderType']);
+    Route::get('/charts', [OrderController::class, 'getChart']);
+    Route::get('/chart/{orderType}', [OrderController::class, 'getChartByOrderType']);
 });
 
 Route::group(['prefix' => 'review', 'middleware' => 'auth:sanctum'], function () {
@@ -97,8 +98,10 @@ Route::group(['prefix' => 'kecamatan', 'middleware' => 'auth:sanctum'], function
     Route::delete('/delete/{id}', [KecamatanController::class, 'deleteKecamatan']);
     Route::get('/getall', [KecamatanController::class, 'getKecamatans']);
     Route::get('/get/{id}', [KecamatanController::class, 'getKecamatan']);
-    Route::get('/laundry/{laundry_id}', [KecamatanController::class, 'getKecamatansByLaundryId']);
+    Route::get('/get-kecamatan-kabupatenid/{kabupaten_id}', [KecamatanController::class, 'getKecamatanByKabupatenId']);
+    Route::get('/laundry/{laundry_id}', [KecamatanController::class, 'getKecamatansByLaundryId']); 
 });
+
 
 Route::group(['prefix' => 'payment', 'middleware' => 'auth:sanctum'], function() {
     Route::post('/create', [PaymentController::class, 'createPayment']);

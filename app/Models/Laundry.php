@@ -12,6 +12,7 @@ class Laundry extends Model
         'name', 
         'description',
     ];
+    
 
     public function reviews()
     {
