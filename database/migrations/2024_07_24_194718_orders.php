@@ -24,6 +24,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id'); 
             $table->string('kabupaten');
             $table->string('kecamatan');
+            $table->string('decline_note')->nullable();
             $table->enum('order_status', [
                 'pending',
                 'in-progress',

@@ -22,6 +22,7 @@ class Order extends Model
         'laundry_id',
         'kabupaten',
         'kecamatan',
+        'decline_note',
     ];
 
     protected $casts = [

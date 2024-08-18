@@ -42,62 +42,65 @@ class OrderController extends Controller
     }
 
     public function updateOrder(Request $request)
-    {
-        $request->validate([
-            'id' => 'required|integer|exists:orders,id',
-            'detail_address' => 'sometimes|required|string|max:255',
-            'phone' => 'sometimes|required|string|max:255',
-            'total_price' => 'sometimes|required|numeric',
-            'pickup_date' => 'sometimes|required|date',
-            'notes' => 'sometimes|nullable|string|max:255',
-            'order_status' => 'sometimes|nullable|string|in:pending,in-progress,completed,decline',
-            'kabupaten' => 'sometimes|required|string|max:255',
-            'kecamatan' => 'sometimes|required|string|max:255',
-        ]);
+{
+    $request->validate([
+        'id' => 'required|integer|exists:orders,id',
+        'detail_address' => 'sometimes|required|string|max:255',
+        'phone' => 'sometimes|required|string|max:255',
+        'total_price' => 'sometimes|required|numeric',
+        'pickup_date' => 'sometimes|required|date',
+        'notes' => 'sometimes|nullable|string|max:255',
+        'order_status' => 'sometimes|nullable|string|in:pending,in-progress,completed,decline',
+        'kabupaten' => 'sometimes|required|string|max:255',
+        'kecamatan' => 'sometimes|required|string|max:255',
+        'decline_note' => 'sometimes|nullable|string|max:255', // Validasi untuk decline_note
+    ]);
 
-        $order = Order::find($request->id);
-        $previousStatus = $order->order_status; // Simpan status sebelumnya
+    $order = Order::find($request->id);
+    $previousStatus = $order->order_status; // Simpan status sebelumnya
 
-        $order->update($request->only([
-            'detail_address',
-            'phone',
-            'total_price',
-            'pickup_date',
-            'notes',
-            'order_status',
-            'kabupaten',
-            'kecamatan',
-        ]));
+    $order->update($request->only([
+        'detail_address',
+        'phone',
+        'total_price',
+        'pickup_date',
+        'notes',
+        'order_status',
+        'kabupaten',
+        'kecamatan',
+        'decline_note', // Update decline_note jika ada
+    ]));
 
-        // Kirim push notification jika status order berubah
-        if ($order->wasChanged('order_status')) {
-            $user = $order->user;
-            $title = 'Pembaruan Pesanan';
-            $body = ''; // Inisialisasi body notifikasi
-            $imageUrl = 'https://example.com/image.jpg'; // Ganti dengan URL gambar Anda
+    // Kirim push notification jika status order berubah
+    if ($order->wasChanged('order_status')) {
+        $user = $order->user;
+        $title = 'Pembaruan Pesanan';
+        $body = ''; // Inisialisasi body notifikasi
+        $imageUrl = 'https://example.com/image.jpg'; // Ganti dengan URL gambar Anda
 
-            // Tentukan pesan notifikasi berdasarkan perubahan status
-            if ($previousStatus === 'pending' && $order->order_status === 'in-progress') {
-                $body = 'Pesanan diterima, sepatu Anda sedang di proses!';
-            } elseif ($previousStatus === 'in-progress' && $order->order_status === 'completed') {
-                $body = 'Sepatu Anda sudah selesai dibersihkan!';
-            } elseif ($previousStatus === 'pending' && $order->order_status === 'decline') {
-                $body = 'Maaf, pesanan Anda ditolak!';
-            }
-
-            if (!empty($body)) { // Kirim notifikasi jika ada pesan
-                $firebaseService = new FirebaseService();
-                $firebaseService->sendNotification($user->notification_token, $title, $body, $imageUrl);
-            }
+        // Tentukan pesan notifikasi berdasarkan perubahan status
+        if ($previousStatus === 'pending' && $order->order_status === 'in-progress') {
+            $body = 'Pesanan diterima, sepatu Anda sedang di proses!';
+        } elseif ($previousStatus === 'in-progress' && $order->order_status === 'completed') {
+            $body = 'Sepatu Anda sudah selesai dibersihkan!';
+        } elseif ($previousStatus === 'pending' && $order->order_status === 'decline') {
+            $body = 'Maaf, pesanan Anda ditolak!'; // Anda dapat menambahkan decline_note di sini jika diperlukan
         }
 
-        $order->load('user');
-
-        return response()->json([
-            'message' => 'Order updated successfully',
-            'order' => $order,
-        ], 200);
+        if (!empty($body)) { // Kirim notifikasi jika ada pesan
+            $firebaseService = new FirebaseService();
+            $firebaseService->sendNotification($user->notification_token, $title, $body, $imageUrl);
+        }
     }
+
+    $order->load('user');
+
+    return response()->json([
+        'message' => 'Order updated successfully',
+        'order' => $order,
+    ], 200);
+}
+
 
     public function deleteOrder($id)
     {
