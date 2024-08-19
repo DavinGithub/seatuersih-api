@@ -175,24 +175,24 @@ class OrderController extends Controller
         ]);
     }
 
-    public function getOrdersByStatus($status)
-    {
-        $user = auth()->user();
-        $orders = Order::with('user')->where('user_id', $user->id)
-                       ->where('order_status', $status)
-                       ->get();
+   public function getOrdersByStatus($status)
+{
+    $orders = Order::with('user')
+                   ->where('order_status', $status)
+                   ->get();
 
-        if ($orders->isEmpty()) {
-            return response()->json([
-                'message' => 'No orders found with the specified status',
-            ], 404);
-        }
-
+    if ($orders->isEmpty()) {
         return response()->json([
-            'message' => 'Orders with status: ' . $status,
-            'data' => $orders,
-        ], 200);
-    } 
+            'message' => 'No orders found with the specified status',
+        ], 404);
+    }
+
+    return response()->json([
+        'message' => 'Orders with status: ' . $status,
+        'data' => $orders,
+    ], 200);
+}
+
       
     public function getChart()
 {
