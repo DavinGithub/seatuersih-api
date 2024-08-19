@@ -8,6 +8,7 @@ use App\Models\Order;
 use Carbon\Carbon;
 use App\Models\Shoe;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
@@ -189,6 +190,27 @@ class OrderController extends Controller
 
     return response()->json([
         'message' => 'Orders with status: ' . $status,
+        'data' => $orders,
+    ], 200);
+}
+
+public function getOrdersByStatusUser($status)
+{
+    $user = Auth::user(); 
+
+    $orders = Order::with('user')
+                   ->where('order_status', $status)
+                   ->where('user_id', $user->id)
+                   ->get();
+
+    if ($orders->isEmpty()) {
+        return response()->json([
+            'message' => 'No orders found with the specified status for the logged-in user',
+        ], 404);
+    }
+
+    return response()->json([
+        'message' => 'Orders with status: ' . $status . ' for the logged-in user',
         'data' => $orders,
     ], 200);
 }
