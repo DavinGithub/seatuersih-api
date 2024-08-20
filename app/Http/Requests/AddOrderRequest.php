@@ -30,7 +30,7 @@ class AddOrderRequest extends FormRequest
             'total_price' => 'nullable|numeric',
             'pickup_date' => 'required|date',
             'notes' => 'nullable|string|max:255',
-            'order_status' => 'nullable|string|in:pending,in-progress,completed,decline',
+            'order_status' => 'nullable|string|in:pending,waiting_for_payment,in-progress,completed,decline',
             'kabupaten' => 'required|string|max:255',
             'kecamatan' => 'required|string|max:255',
         ];
