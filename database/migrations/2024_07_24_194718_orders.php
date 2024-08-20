@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('decline_note')->nullable();
             $table->enum('order_status', [
                 'pending',
+                'waiting_for_payment',
                 'in-progress',
                 'completed',
                 'decline'

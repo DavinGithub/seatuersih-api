@@ -51,7 +51,7 @@ class OrderController extends Controller
         'total_price' => 'sometimes|required|numeric',
         'pickup_date' => 'sometimes|required|date',
         'notes' => 'sometimes|nullable|string|max:255',
-        'order_status' => 'sometimes|nullable|string|in:pending,in-progress,completed,decline',
+        'order_status' => 'sometimes|nullable|string|in:pending,waiting_for_payment,in-progress,completed,decline',
         'kabupaten' => 'sometimes|required|string|max:255',
         'kecamatan' => 'sometimes|required|string|max:255',
         'decline_note' => 'sometimes|nullable|string|max:255', // Validasi untuk decline_note
