@@ -1,6 +1,5 @@
 <?php
 
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
@@ -14,11 +13,7 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\KabupatenController;
 use App\Http\Controllers\KecamatanController;
 use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\StorestatusController;
-
-// Route::get('/user', function (Request $request) {
-//     return $request->user();
-// })->middleware('auth:sanctum');
+use App\Http\Controllers\StoreStatusController;
 
 Route::group(['prefix' => 'users'], function () {
     Route::post('/register', [UserController::class, 'register']);
@@ -28,7 +23,7 @@ Route::group(['prefix' => 'users'], function () {
     Route::post('/update-profile-picture', [UserController::class, 'updateProfilePicture'])->middleware('auth:sanctum');
     Route::delete('/logout', [UserController::class, 'logout'])->middleware('auth:sanctum');
     Route::post('/send-otp', [OtpController::class, 'sendOtp'])->middleware('auth:sanctum');
-    Route::post('/verify-otp', [OtpController::class, 'verifyOtp'])->middleware('auth:sanctum'); // Perbaiki baris ini
+    Route::post('/verify-otp', [OtpController::class, 'verifyOtp'])->middleware('auth:sanctum');
 
     Route::group(['prefix' => 'update', 'middleware' => 'auth:sanctum'], function() {
         Route::post('/username', [UserController::class, 'updateUsername']);
@@ -40,8 +35,7 @@ Route::group(['prefix' => 'users'], function () {
     });
 });
 
-
-Route::group(['prefix' => '/admins'], function () {
+Route::group(['prefix' => 'admins'], function () {
     Route::post('/register', [AdminController::class, 'register']);
     Route::post('/login', [AdminController::class, 'login']);
     Route::delete('/logout', [AdminController::class, 'logout'])->middleware('auth:sanctum');
@@ -72,7 +66,7 @@ Route::group(['prefix' => 'order', 'middleware' => 'auth:sanctum'], function () 
 Route::group(['prefix' => 'review', 'middleware' => 'auth:sanctum'], function () {
     Route::post('/add', [ReviewController::class, 'addReview']);
     Route::get('/average/{id}', [ReviewController::class, 'getAverageRating']);
-    Route::get('/all/{id}', [ReviewController::class, 'getReviews']); 
+    Route::get('/all/{id}', [ReviewController::class, 'getReviews']);
 });
 
 Route::group(['prefix' => 'laundry', 'middleware' => 'auth:sanctum'], function () {
@@ -84,10 +78,10 @@ Route::group(['prefix' => 'laundry', 'middleware' => 'auth:sanctum'], function (
 });
 
 Route::group(['prefix' => 'brand', 'middleware' => 'auth:sanctum'], function () {
-    Route::post('/add', [BrandController::class, 'addBrand']); 
+    Route::post('/add', [BrandController::class, 'addBrand']);
     Route::put('/update', [BrandController::class, 'updateBrand']);
     Route::delete('/delete/{id}', [BrandController::class, 'deleteBrand']);
-    Route::get('/getall', [BrandController::class, 'getBrands']); 
+    Route::get('/getall', [BrandController::class, 'getBrands']);
     Route::get('/get/{id}', [BrandController::class, 'getBrand']);
     Route::get('/user/{userId}', [BrandController::class, 'getBrandsByUserId']);
 });
@@ -116,7 +110,7 @@ Route::group(['prefix' => 'payment', 'middleware' => 'auth:sanctum'], function()
     Route::delete('/expire/{id}', [PaymentController::class, 'expirePayment']);
     Route::get('/get', [PaymentController::class, 'getInvoiceUser']);
     Route::get('/all-payment-histories', [PaymentController::class, 'getAllPaymentHistories']);
-} );
+});
 
 Route::group(['prefix' => 'StoreStatus', 'middleware' => 'auth:sanctum'], function() { 
     Route::get('/', [StoreStatusController::class, 'index']);
