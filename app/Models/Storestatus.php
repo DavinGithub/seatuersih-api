@@ -6,9 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 
-class Storestatus extends Model
+class StoreStatus extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'is_open',
         'days',
@@ -17,19 +18,21 @@ class Storestatus extends Model
         'temporary_closure_duration',
     ];
 
+    // Custom accessor for checking if the store is open
     public function getIsOpenAttribute()
     {
-        $today = Carbon::now('Asia/Jakarta')->locale('id')->dayName; // Get the current day name in Indonesian
-        $currentTime = Carbon::now('Asia/Jakarta')->format('H:i:s'); // Get the current time
+        $today = Carbon::now('Asia/Jakarta')->locale('id')->dayName;
+        $currentTime = Carbon::now('Asia/Jakarta')->format('H:i:s');
 
         if ($this->temporary_closure_duration) {
             return false;
         }
+
         $startTime_C = strtotime($this->start_time);
         $endTime_C = strtotime($this->end_time);
         $currentTime_C = strtotime($currentTime);
+
         if (stripos($this->days, $today) !== false) {
-            // Check if the current time is within the operating hours
             if ($currentTime >= $this->start_time && $currentTime <= $this->end_time) {
                 return true;
             }
@@ -38,4 +41,3 @@ class Storestatus extends Model
         return false;
     }
 }
-

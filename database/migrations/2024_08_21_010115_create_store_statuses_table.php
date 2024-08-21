@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('storestatuses', function (Blueprint $table) {
+        Schema::create('store_statuses', function (Blueprint $table) {
             $table->id();
             $table->boolean('is_open')->default(false);
             $table->string('days')->nullable();
             $table->time('start_time')->nullable();
             $table->time('end_time')->nullable();
-            $table->integer('temporary_closure_duration')->nullable(); 
+            $table->integer('temporary_closure_duration')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('storestatuses');
+        Schema::dropIfExists('store_statuses');
     }
 };
