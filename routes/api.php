@@ -14,7 +14,7 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\KabupatenController;
 use App\Http\Controllers\KecamatanController;
 use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\StorestatusController;
+use App\Http\Controllers\StoreStatusController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -119,9 +119,9 @@ Route::group(['prefix' => 'payment', 'middleware' => 'auth:sanctum'], function()
 } );
 
 Route::group(['prefix' => 'StoreStatus', 'middleware' => 'auth:sanctum'], function() { 
-    Route::get('/', [StorestatusController::class, 'index']);
-    Route::post('/store', [StorestatusController::class, 'store']);
-    Route::get('/{id}', [StorestatusController::class, 'show']);
-    Route::put('/{id}', [StorestatusController::class, 'update']);
-    Route::delete('/{id}', [StorestatusController::class, 'destroy']);
+    Route::get('/', [StoreStatusController::class, 'index']);
+    Route::post('/store', [StoreStatusController::class, 'store']);
+    Route::get('/{id}', [StoreStatusController::class, 'show']);
+    Route::put('/{id}', [StoreStatusController::class, 'update']);
+    Route::delete('/{id}', [StoreStatusController::class, 'destroy']);
 });
