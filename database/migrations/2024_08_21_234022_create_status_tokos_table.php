@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('store_statuses', function (Blueprint $table) {
+        Schema::create('status_tokos', function (Blueprint $table) {
             $table->id();
             $table->boolean('is_open')->default(false);
             $table->string('days')->nullable();
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('store_statuses');
+        Schema::dropIfExists('status_tokos');
     }
 };

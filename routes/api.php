@@ -13,7 +13,8 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\KabupatenController;
 use App\Http\Controllers\KecamatanController;
 use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\StoreStatusController;
+use App\Http\Controllers\StatusTokoController;
+use App\Models\StatusToko;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -117,9 +118,9 @@ Route::group(['prefix' => 'payment', 'middleware' => 'auth:sanctum'], function()
 });
 
 Route::group(['prefix' => 'store-status', 'middleware' => 'auth:sanctum'], function() { 
-    Route::get('/', [StoreStatusController::class, 'index']);
-    Route::post('/store', [StoreStatusController::class, 'store']);
-    Route::get('/{id}', [StoreStatusController::class, 'show']);
-    Route::put('/{id}', [StoreStatusController::class, 'update']);
-    Route::delete('/{id}', [StoreStatusController::class, 'destroy']);
+    Route::get('/', [StatusTokoController::class, 'index']);
+    Route::post('/store', [StatusTokoController::class, 'store']);
+    Route::get('/{id}', [StatusTokoController::class, 'show']);
+    Route::put('/{id}', [StatusTokoController::class, 'update']);
+    Route::delete('/{id}', [StatusTokoController::class, 'destroy']);
 });
