@@ -112,7 +112,7 @@ Route::group(['prefix' => 'payment', 'middleware' => 'auth:sanctum'], function()
     Route::get('/all-payment-histories', [PaymentController::class, 'getAllPaymentHistories']);
 });
 
-Route::group(['prefix' => 'storestatus', 'middleware' => 'auth:sanctum'], function() { 
+Route::group(['prefix' => 'StoreStatus', 'middleware' => 'auth:sanctum'], function() { 
     Route::get('/', [StoreStatusController::class, 'index']);
     Route::post('/store', [StoreStatusController::class, 'store']);
     Route::get('/{id}', [StoreStatusController::class, 'show']);
