@@ -14,9 +14,7 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\KabupatenController;
 use App\Http\Controllers\KecamatanController;
 use App\Http\Controllers\PaymentController;
-
-
-
+use App\Http\Controllers\StorestatusController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -118,5 +116,12 @@ Route::group(['prefix' => 'payment', 'middleware' => 'auth:sanctum'], function()
     Route::delete('/expire/{id}', [PaymentController::class, 'expirePayment']);
     Route::get('/get', [PaymentController::class, 'getInvoiceUser']);
     Route::get('/all-payment-histories', [PaymentController::class, 'getAllPaymentHistories']);
-
 } );
+
+Route::group(['prefix' => 'Storestatus', 'middleware' => 'auth:sanctum'], function() { 
+    Route::get('/', [StoreStatusController::class, 'index']);
+    Route::post('/store', [StoreStatusController::class, 'store']);
+    Route::get('/{id}', [StoreStatusController::class, 'show']);
+    Route::put('/{id}', [StoreStatusController::class, 'update']);
+    Route::delete('/{id}', [StoreStatusController::class, 'destroy']);
+});
