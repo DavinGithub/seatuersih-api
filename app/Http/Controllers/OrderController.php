@@ -54,11 +54,11 @@ class OrderController extends Controller
         'order_status' => 'sometimes|nullable|string|in:pending,waiting_for_payment,in-progress,completed,decline',
         'kabupaten' => 'sometimes|required|string|max:255',
         'kecamatan' => 'sometimes|required|string|max:255',
-        'decline_note' => 'sometimes|nullable|string|max:255', // Validasi untuk decline_note
+        'decline_note' => 'sometimes|nullable|string|max:255', 
     ]);
 
     $order = Order::find($request->id);
-    $previousStatus = $order->order_status; // Simpan status sebelumnya
+    $previousStatus = $order->order_status;
 
     $order->update($request->only([
         'detail_address',
@@ -69,10 +69,9 @@ class OrderController extends Controller
         'order_status',
         'kabupaten',
         'kecamatan',
-        'decline_note', // Update decline_note jika ada
+        'decline_note', 
     ]));
 
-    // Kirim push notification jika status order berubah
     if ($order->wasChanged('order_status')) {
         $user = $order->user;
         $title = 'Pembaruan Pesanan';

@@ -13,6 +13,7 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\KabupatenController;
 use App\Http\Controllers\KecamatanController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\StoreStatusController;
 
 Route::group(['prefix' => 'users'], function () {
     Route::post('/register', [UserController::class, 'register']);
@@ -103,12 +104,18 @@ Route::group(['prefix' => 'kecamatan', 'middleware' => 'auth:sanctum'], function
     Route::get('/laundry/{laundry_id}', [KecamatanController::class, 'getKecamatansByLaundryId']); 
 });
 
-
 Route::group(['prefix' => 'payment', 'middleware' => 'auth:sanctum'], function() {
     Route::post('/create', [PaymentController::class, 'createPayment']);
     Route::post('/update', [PaymentController::class, 'updatePaymentStatus']);
     Route::delete('/expire/{id}', [PaymentController::class, 'expirePayment']);
     Route::get('/get', [PaymentController::class, 'getInvoiceUser']);
     Route::get('/all-payment-histories', [PaymentController::class, 'getAllPaymentHistories']);
+});
 
-} );
+Route::group(['prefix' => 'storestatus', 'middleware' => 'auth:sanctum'], function() { 
+    Route::get('/', [StoreStatusController::class, 'index']);
+    Route::post('/store', [StoreStatusController::class, 'store']);
+    Route::get('/{id}', [StoreStatusController::class, 'show']);
+    Route::put('/{id}', [StoreStatusController::class, 'update']);
+    Route::delete('/{id}', [StoreStatusController::class, 'destroy']);
+});
