@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Carbon\Carbon;
 
 class StatusToko extends Model
 {
@@ -12,32 +11,21 @@ class StatusToko extends Model
 
     protected $fillable = [
         'is_open',
-        'days',
-        'start_time',
-        'end_time',
-        'temporary_closure_duration',
     ];
 
-    // Custom accessor for checking if the store is open
-    public function getIsOpenAttribute()
+    /**
+     * Accessor untuk mengonversi is_open menjadi boolean
+     */
+    public function getIsOpenAttribute($value)
     {
-        $today = Carbon::now('Asia/Jakarta')->locale('id')->dayName;
-        $currentTime = Carbon::now('Asia/Jakarta')->format('H:i:s');
+        return (bool) $value;
+    }
 
-        if ($this->temporary_closure_duration) {
-            return false;
-        }
-
-        $startTime_C = strtotime($this->start_time);
-        $endTime_C = strtotime($this->end_time);
-        $currentTime_C = strtotime($currentTime);
-
-        if (stripos($this->days, $today) !== false) {
-            if ($currentTime >= $this->start_time && $currentTime <= $this->end_time) {
-                return true;
-            }
-        }
-
-        return false;
+    /**
+     * Mutator untuk mengonversi is_open menjadi integer saat menyimpan
+     */
+    public function setIsOpenAttribute($value)
+    {
+        $this->attributes['is_open'] = (int) filter_var($value, FILTER_VALIDATE_BOOLEAN);
     }
 }

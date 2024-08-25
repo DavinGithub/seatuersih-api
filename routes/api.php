@@ -118,9 +118,7 @@ Route::group(['prefix' => 'payment', 'middleware' => 'auth:sanctum'], function()
 });
 
 Route::group(['prefix' => 'store-status', 'middleware' => 'auth:sanctum'], function() { 
-    Route::get('/', [StatusTokoController::class, 'index']);
-    Route::post('/store', [StatusTokoController::class, 'store']);
-    Route::get('/{id}', [StatusTokoController::class, 'show']);
-    Route::put('/{id}', [StatusTokoController::class, 'update']);
-    Route::delete('/{id}', [StatusTokoController::class, 'destroy']);
+    Route::post('/status-toko', [StatusTokoController::class, 'store']);
+    Route::get('/status-toko/{id}', [StatusTokoController::class, 'show']);
+    Route::put('/status-toko/{id}', [StatusTokoController::class, 'update']);
 });
