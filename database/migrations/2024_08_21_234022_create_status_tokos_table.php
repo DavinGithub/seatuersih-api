@@ -14,10 +14,6 @@ return new class extends Migration
         Schema::create('status_tokos', function (Blueprint $table) {
             $table->id();
             $table->boolean('is_open')->default(false);
-            $table->string('days')->nullable();
-            $table->time('start_time')->nullable();
-            $table->time('end_time')->nullable();
-            $table->integer('temporary_closure_duration')->nullable();
             $table->timestamps();
         });
     }
