@@ -15,6 +15,7 @@ use App\Http\Controllers\KecamatanController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\StatusTokoController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\NotificationController;
 
 
 // Route::get('/user', function (Request $request) {
@@ -129,5 +130,12 @@ Route::group(['prefix' => 'transactions', 'middleware' => 'auth:sanctum'], funct
     Route::get('get-transaction', [TransactionController::class, 'getTransaction']);
     Route::get('all', [TransactionController::class, 'getAllTransaction']);
     Route::delete('delete-transaction', [TransactionController::class, 'deleteTransaction']);
+});
+
+Route::group(['prefix' => 'notifications', 'middleware' => ['auth:admin', 'scope:admin']], function () {
+    Route::post('/send', [NotificationController::class, 'sendNotification']);
+    Route::post('/send-to-all', [NotificationController::class, 'sendNotificationToAll']);
+    Route::post('/send-to-admin', [NotificationController::class, 'sendNotificationToAdmin']);
+    Route::get('/all', [NotificationController::class, 'getNotifications']);
 });
 
