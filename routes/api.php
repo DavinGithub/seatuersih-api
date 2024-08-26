@@ -14,7 +14,8 @@ use App\Http\Controllers\KabupatenController;
 use App\Http\Controllers\KecamatanController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\StatusTokoController;
-use App\Models\StatusToko;
+use App\Http\Controllers\TransactionController;
+
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -122,3 +123,11 @@ Route::group(['prefix' => 'store-status', 'middleware' => 'auth:sanctum'], funct
     Route::get('/status-toko/{id}', [StatusTokoController::class, 'show']);
     Route::put('/status-toko/{id}', [StatusTokoController::class, 'update']);
 });
+
+Route::group(['prefix' => 'transactions', 'middleware' => 'auth:sanctum'], function() { 
+    Route::post('invoice-status', [TransactionController::class, 'invoiceStatus']);
+    Route::get('get-transaction', [TransactionController::class, 'getTransaction']);
+    Route::get('all', [TransactionController::class, 'getAllTransaction']);
+    Route::delete('delete-transaction', [TransactionController::class, 'deleteTransaction']);
+});
+
