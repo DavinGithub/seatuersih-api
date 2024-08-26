@@ -132,7 +132,7 @@ Route::group(['prefix' => 'transactions', 'middleware' => 'auth:sanctum'], funct
     Route::delete('delete-transaction', [TransactionController::class, 'deleteTransaction']);
 });
 
-Route::group(['prefix' => 'notifications', 'middleware' => ['auth:admin', 'scope:admin']], function () {
+Route::group(['prefix' => 'notifications', 'middleware' => 'auth:sanctum'], function () {
     Route::post('/send', [NotificationController::class, 'sendNotification']);
     Route::post('/send-to-all', [NotificationController::class, 'sendNotificationToAll']);
     Route::post('/send-to-admin', [NotificationController::class, 'sendNotificationToAdmin']);
