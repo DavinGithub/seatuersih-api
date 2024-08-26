@@ -4,11 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AddReviewRequest;
 use App\Models\Review;
-use App\Models\Laundry; // Ubah dari Order ke Laundry
 use Illuminate\Http\Request;
+use App\Services\FirebaseService;
+use Illuminate\Support\Facades\Auth;
 
 class ReviewController extends Controller
 {
+    protected $firebaseService;
+
+    public function __construct(FirebaseService $firebaseService)
+    {
+        $this->firebaseService = $firebaseService;
+    }
+
     public function addReview(AddReviewRequest $request)
     {
         $user = auth()->user();
@@ -21,13 +29,20 @@ class ReviewController extends Controller
             'review_date' => now()
         ]);
 
+        $this->firebaseService->sendToAdmin(
+            'Review Baru Ditambahkan',
+            'Seseorang baru saja menambahkan review, dengan rating ' . $request->rating,
+            '',
+            ['route' => '/reviews/' . $review->id, 'data' => $review->id]
+        );
+
         return response()->json([
             'message' => 'Review added successfully',
             'review' => $review,
         ], 201);
     }
 
-    public function getAverageRating($laundryId) // Ubah dari orderId ke laundryId
+    public function getAverageRating($laundryId)
     {
         $averageRating = Review::where('laundry_id', $laundryId)->avg('rating');
 
@@ -36,7 +51,7 @@ class ReviewController extends Controller
         ]);
     }   
 
-    public function getReviews($laundryId) // Ubah dari orderId ke laundryId
+    public function getReviews($laundryId)
     {
         $reviews = Review::where('laundry_id', $laundryId)->get();
         
