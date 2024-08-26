@@ -14,13 +14,19 @@ use Illuminate\Support\Facades\Auth;
 class OrderController extends Controller
 {
     protected $firebaseService;
+
+      public function __construct(FirebaseService $firebaseService)
+    {
+        $this->firebaseService = $firebaseService;
+    }
+
     public function addOrder(AddOrderRequest $request)
     {
         $date = date('YmdHis');
         $nomor_pemesanan = $request->user()->id . $date;
-    
+
         $orderStatus = $request->order_status ?? 'pending';
-    
+
         $order = Order::create([
             'order_type' => $request->order_type,
             'order_number' => $nomor_pemesanan,
@@ -35,22 +41,22 @@ class OrderController extends Controller
             'kabupaten' => $request->kabupaten,
             'kecamatan' => $request->kecamatan,
         ]);
-    
+
         $order->load('user');
-    
-        // Kirim notifikasi ke admin
+
         $this->firebaseService->sendToAdmin(
             'Pesanan Baru Masuk',
             'Pesanan baru telah dibuat oleh ' . $request->user()->name . '.',
             '',
             ['route' => '/transaction_page.screen', 'data' => $order->id]
         );
-    
+
         return response()->json([
             'message' => 'Order added successfully',
             'order' => $order,
         ], 201);
     }
+
     
     public function updateOrder(Request $request)
     {
