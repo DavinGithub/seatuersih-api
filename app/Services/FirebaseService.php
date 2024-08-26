@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Notification; // Pastikan menggunakan model Notification
+use App\Models\Notification;
 use App\Models\User;
 use App\Models\Admin;
 use Kreait\Firebase\Messaging\CloudMessage;
@@ -50,12 +50,16 @@ class FirebaseService
         $tokens = User::whereNotNull('notification_token')->get();
         $notification = FirebaseNotification::create($title, $body, $imageUrl);
 
+        // Inisialisasi variabel $notify dengan nilai null
+        $notify = null;
+
         foreach ($tokens as $deviceToken) {
             $message = CloudMessage::withTarget('token', $deviceToken->notification_token)
                 ->withNotification($notification)
                 ->withData($data);
             $notify = $this->messaging->send($message);
         }
+
         $this->writeNotification("", $title, $body, $imageUrl);
         return $notify;
     }
@@ -65,12 +69,15 @@ class FirebaseService
         $tokens = Admin::whereNotNull('notification_token')->get();
         $notification = FirebaseNotification::create($title, $body, $imageUrl);
 
+        $notify = null;
+
         foreach ($tokens as $deviceToken) {
             $message = CloudMessage::withTarget('token', $deviceToken->notification_token)
                 ->withNotification($notification)
                 ->withData($data);
             $notify = $this->messaging->send($message);
         }
+
         return $notify;
     }
 }
