@@ -16,14 +16,22 @@ class AdminController extends Controller
         $request->validate([
             'email' => 'required|email',
             'password' => 'required|string',
+            'notification_token' => 'nullable|string', // Menambahkan validasi untuk notification_token
         ]);
 
         $user = Admin::where('email', $request->email)->first();
-        if ($user == null | ! Hash::check($request->password, $user->password)) {
+        if (!$user || !Hash::check($request->password, $user->password)) {
             return response([
                 'message' => 'Invalid credentials',
             ], 401);
         }
+
+        // Menetapkan dan menyimpan notification_token
+        if ($request->has('notification_token')) {
+            $user->notification_token = $request->notification_token;
+            $user->save();
+        }
+
         $token = $user->createToken('seatuersih')->plainTextToken;
 
         return response([
@@ -39,24 +47,30 @@ class AdminController extends Controller
             'email' => 'required|email',
             'phone' => 'required|string',
             'password' => 'required|string|min:8',
+            'notification_token' => 'nullable|string', // Menambahkan validasi untuk notification_token
         ]);
+
         $user = Admin::where('email', $request->email)->first();
         if ($user != null) {
             return response([
                 'message' => 'Email already exists',
             ], 409);
         }
+
         $userdata = [
             'username' => $request->username,
             'email' => $request->email,
             'phone' => $request->phone,
             'password' => Hash::make($request->password),
             'role' => 'admin',
+            'notification_token' => $request->notification_token, 
         ];
+
         $user = Admin::create($userdata);
         $token = $user->createToken('seatuhersih')->plainTextToken;
 
-        return response(['admin' => $user,
+        return response([
+            'admin' => $user,
             'token' => $token,
         ], 201);
     }

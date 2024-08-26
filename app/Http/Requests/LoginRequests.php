@@ -24,6 +24,7 @@ class LoginRequests extends FormRequest
         return [
             'email' => 'required|string|email|max:255',
             'password' => 'required|string|min:8',
+            'notification_token' => 'required|string'
         ];
     }
 }
