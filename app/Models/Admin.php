@@ -15,6 +15,7 @@ class Admin extends Model
         'username',
         'email',
         'phone',
+        'notification_token',
         'role',
         'password',
     ];

@@ -2,12 +2,12 @@
 
 namespace App\Services;
 
-use App\Models\notification as NotificationModel;
+use App\Models\Notification; // Pastikan menggunakan model Notification
 use App\Models\User;
 use App\Models\Admin;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Factory;
-use Kreait\Firebase\Messaging\Notification;
+use Kreait\Firebase\Messaging\Notification as FirebaseNotification;
 
 class FirebaseService
 {
@@ -19,7 +19,6 @@ class FirebaseService
         $this->messaging = $factory->createMessaging();
     }
 
-
     public function writeNotification($notification_token, $title, $body, $imageUrl)
     {
         $user = User::where('notification_token', $notification_token)->first();
@@ -29,29 +28,32 @@ class FirebaseService
             'image' => $imageUrl,
             'user_id' => $user ? $user->id : null,
         ];
-        $notification = NotificationModel::create($attributes);
+        $notification = Notification::create($attributes);
         return $notification;
     }
 
     public function sendNotification($deviceToken, $title, $body, $imageUrl, $data = [])
     {
-        $notification = Notification::create($title, $body, $imageUrl);
+        $notification = FirebaseNotification::create($title, $body, $imageUrl);
 
         $message = CloudMessage::withTarget('token', $deviceToken)
-            ->withNotification($notification)->withData($data);
+            ->withNotification($notification)
+            ->withData($data);
 
         $notify = $this->messaging->send($message);
         $this->writeNotification($deviceToken, $title, $body, $imageUrl);
         return $notify;
     }
-    public function sendNotificationToall($title, $body, $imageUrl, $data = [])
-    {
-        $token = User::whereNotNull('notification_token')->get();
-        $notification = Notification::create($title, $body, $imageUrl);
 
-        foreach ($token as $deviceToken) {
+    public function sendNotificationToAll($title, $body, $imageUrl, $data = [])
+    {
+        $tokens = User::whereNotNull('notification_token')->get();
+        $notification = FirebaseNotification::create($title, $body, $imageUrl);
+
+        foreach ($tokens as $deviceToken) {
             $message = CloudMessage::withTarget('token', $deviceToken->notification_token)
-                ->withNotification($notification)->withData($data);
+                ->withNotification($notification)
+                ->withData($data);
             $notify = $this->messaging->send($message);
         }
         $this->writeNotification("", $title, $body, $imageUrl);
@@ -60,12 +62,13 @@ class FirebaseService
 
     public function sendToAdmin($title, $body, $imageUrl, $data = [])
     {
-        $token = Admin::whereNotNull('notification_token')->get();
-        $notification = Notification::create($title, $body, $imageUrl);
+        $tokens = Admin::whereNotNull('notification_token')->get();
+        $notification = FirebaseNotification::create($title, $body, $imageUrl);
 
-        foreach ($token as $deviceToken) {
+        foreach ($tokens as $deviceToken) {
             $message = CloudMessage::withTarget('token', $deviceToken->notification_token)
-                ->withNotification($notification)->withData($data);
+                ->withNotification($notification)
+                ->withData($data);
             $notify = $this->messaging->send($message);
         }
         return $notify;
