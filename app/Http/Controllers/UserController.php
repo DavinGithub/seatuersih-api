@@ -14,7 +14,7 @@ class UserController extends Controller
     public function register(RegisterRequest $request)
     {
         $request->validated();
-
+    
         $userdata = [
             'username' => $request->username,
             'email' => $request->email,
@@ -22,20 +22,21 @@ class UserController extends Controller
             'password' => Hash::make($request->password),
             'notification_token' => $request->notification_token,
         ];
-
+    
         if ($request->hasFile('profile_picture')) {
-            $path = $request->file('profile_picture')->store('profile_pictures');
-            $userdata['profile_picture'] = $path;
+            $imagePath = $request->file('profile_picture')->store('profile_pictures', 'public');
+            $userdata['profile_picture'] = asset('storage/' . $imagePath); // Simpan URL lengkap
         }
-
+    
         $user = User::create($userdata);
         $token = $user->createToken('seatuersih')->plainTextToken;
-
+    
         return response([
             'user' => $user,
             'token' => $token,
         ], 201);
     }
+    
 
     public function login(LoginRequests $request)
 {
@@ -194,39 +195,42 @@ class UserController extends Controller
         }
     }
 
-    public function updateUser(Request $request) {
-        $request->validate([
-            'username' => 'required|string',
-            'email' => 'required|string|email',
-            'phone' => 'required|string',
-            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Tambahkan validasi untuk profile_picture
-        ]);
-    
-        $user = User::where('id', auth()->user()->id)->first();
-        $user->username = $request->username;
-        $user->email = $request->email;
-        $user->phone = $request->phone;
-    
-        // Proses profile_picture jika ada
-        if ($request->hasFile('profile_picture')) {
-            // Hapus gambar lama jika ada
-            if ($user->profile_picture) {
-                Storage::delete($user->profile_picture);
-            }
-    
-            // Simpan gambar baru
-            $imagePath = $request->file('profile_picture')->store('profile_pictures');
-            $user->profile_picture = $imagePath;
+    public function updateUser(Request $request)
+{
+    $request->validate([
+        'username' => 'required|string',
+        'email' => 'required|string|email',
+        'phone' => 'required|string',
+        'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
+
+    $user = User::where('id', auth()->user()->id)->first();
+    $user->username = $request->username;
+    $user->email = $request->email;
+    $user->phone = $request->phone;
+
+    if ($request->hasFile('profile_picture')) {
+        // Hapus gambar lama jika ada
+        if ($user->profile_picture) {
+            // Ambil path gambar dari URL
+            $oldImagePath = str_replace(asset('storage/') . '/', '', $user->profile_picture);
+            Storage::disk('public')->delete($oldImagePath);
         }
-    
-        $user->save();
-    
-        return response([
-            'status' => 'success',
-            'message' => 'Change user detail successfully',
-            'user' => $user,
-        ], 200);
+
+        // Simpan gambar baru
+        $imagePath = $request->file('profile_picture')->store('profile_pictures', 'public');
+        $user->profile_picture = asset('storage/' . $imagePath);
     }
+
+    $user->save();
+
+    return response([
+        'status' => 'success',
+        'message' => 'User details updated successfully',
+        'user' => $user,
+    ], 200);
+}
+
     
     public function getAllUsers()
 {
