@@ -187,16 +187,17 @@ class PaymentController extends Controller
     
     public function getAllPaymentHistories()
 {
-    $payments = Payment::with('order.user')->get(['user_id', 'order_id', 'created_at', 'status']);
+    $payments = Payment::with('order.user')->get(['id', 'user_id', 'order_id', 'created_at', 'status']); // Tambahkan 'id' di sini
 
     $paymentHistories = $payments->map(function ($payment) {
         return [
+            'payment_id' => $payment->id,
             'user_id' => $payment->user_id,
             'order_id' => $payment->order_id,
             'order_date' => $payment->order->pickup_date,
             'total_price' => $payment->order->total_price,
             'order_type' => $payment->order->order_type,
-            'user' => $payment->order->user // Pastikan ini memuat user
+            'user' => $payment->order->user 
         ];
     });
 
