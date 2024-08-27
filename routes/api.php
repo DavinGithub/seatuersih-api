@@ -139,6 +139,6 @@ Route::group(['prefix' => 'notifications', 'middleware' => 'auth:sanctum'], func
     Route::get('/all', [NotificationController::class, 'getNotifications']);
 });
 
-Route::group(['prefix' => 'callback', 'middleware' => 'xendit.callback.token'], function () {
+Route::group(['prefix' => 'callback', 'middleware' => 'xendit-callback'], function () {
     Route::post('/invoice-status', [TransactionController::class, 'invoiceStatus']);
 });
