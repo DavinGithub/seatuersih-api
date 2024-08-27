@@ -32,6 +32,7 @@ class TransactionController extends Controller
     $payment->status = strtolower($request->status);
     $payment->save();
 
+    // Update or create a transaction record
     $transaction = Transaction::where('order_id', $payment->order_id)->first();
     if ($transaction == null) {
         $transaction = Transaction::create([
@@ -59,13 +60,14 @@ class TransactionController extends Controller
         ]);
     }
 
+    // Check if the payment status is 'paid'
     if (strtolower($request->status) == 'paid') {
         $order = Order::where('id', $payment->order_id)->first();
-        if ($order != null && $order->status == 'waiting_for_payment') {
-            $order->status = 'in-progress';
+        if ($order != null && $order->order_status == 'waiting_for_payment') {
+            $order->order_status = 'in-progress';
             $order->save();
 
-          
+            // Send notifications
             $this->firebaseService->sendNotification(
                 $payment->user->notification_token,
                 'Pembayaran Berhasil',
@@ -73,27 +75,25 @@ class TransactionController extends Controller
                 ''
             );
 
-
-           $admins = User::where('role', 'admin')->get(); // Atau sesuaikan dengan struktur tabel Anda
+            $admins = User::where('role', 'admin')->get(); // Sesuaikan dengan struktur tabel Anda
             foreach ($admins as $admin) {
                 $this->firebaseService->sendNotification(
                     $admin->notification_token,
                     'Pembayaran Berhasil',
                     'Pembayaran untuk Order ID ' . $transaction->order_id . ' telah terbayarkan',
                     ''
-            
                 );
             }
         }
     }
 
- 
     return response([
         'status' => 'success',
         'message' => 'Payment status updated and order moved to in-progress',
         'payment_status' => $payment->status,
     ], 200);
 }
+
 
 
 
