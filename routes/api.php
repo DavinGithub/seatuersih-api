@@ -138,3 +138,7 @@ Route::group(['prefix' => 'notifications', 'middleware' => 'auth:sanctum'], func
     Route::post('/send-to-admin', [NotificationController::class, 'sendNotificationToAdmin']);
     Route::get('/all', [NotificationController::class, 'getNotifications']);
 });
+
+Route::group(['prefix' => 'callback', 'middleware' => 'xendit.callback.token'], function () {
+    Route::post('/invoice-status', [TransactionController::class, 'invoiceStatus']);
+});
