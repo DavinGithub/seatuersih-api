@@ -119,20 +119,43 @@ class TransactionController extends Controller
         ], 404);
     }
 
-    public function getAllTransaction()
-    {
-        $transactions = Transaction::select(['id', 'payment_type', 'external_id', 'payment_method', 'status', 'amount', 'payment_id', 'payment_channel', 'description', 'paid_at'])
-            ->orderBy('id', 'desc')
-            ->get();
+    public function getAllTransaction(Request $request)
+{
+    // Ambil semua transaksi bersama dengan informasi pengguna
+    $transactions = Transaction::with('payment.user')->get();
 
+    // Cek apakah ada transaksi
+    if ($transactions->isEmpty()) {
         return response([
-            'status' => 'success',
-            'message' => 'Get all transaction successfully',
-            'total_amount' => $transactions->sum('amount'),
-            'total_transaction' => $transactions->count(),
-            'transactions' => $transactions,
-        ], 200);
+            'status' => 'failed',
+            'message' => 'No transactions found',
+        ], 404);
     }
+
+    // Menyusun data transaksi dengan informasi user yang melakukan payment
+    $transactionData = $transactions->map(function ($transaction) {
+        return [
+            'transaction_id' => $transaction->id,
+            'order_id' => $transaction->order_id,
+            'external_id' => $transaction->external_id,
+            'payment_method' => $transaction->payment_method,
+            'status' => $transaction->status,
+            'amount' => $transaction->amount,
+            'paid_at' => $transaction->paid_at,
+            'user' => [
+                'user_id' => $transaction->payment->user->id,
+                'name' => $transaction->payment->user->name,
+            ],
+        ];
+    });
+
+    return response([
+        'status' => 'success',
+        'message' => 'Transactions retrieved successfully',
+        'transactions' => $transactionData,
+    ], 200);
+}
+
 
     public function deleteTransaction(Request $request)
     {
