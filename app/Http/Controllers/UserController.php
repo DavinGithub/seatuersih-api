@@ -232,13 +232,21 @@ class UserController extends Controller
 }
 
     
-    public function getAllUsers()
+public function getAllUsers()
 {
-    $users = User::all();
+ 
+    $users = User::all()->map(function ($user) {
+        // Jika user memiliki profile_picture, buat URL lengkapnya
+        if ($user->profile_picture) {
+            $user->profile_picture = asset('storage/' . $user->profile_picture);
+        }
+        return $user;
+    });
 
     return response([
         'users' => $users,
     ], 200);
 }
+
 
 }

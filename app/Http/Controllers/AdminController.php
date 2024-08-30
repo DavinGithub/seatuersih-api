@@ -16,7 +16,7 @@ class AdminController extends Controller
         $request->validate([
             'email' => 'required|email',
             'password' => 'required|string',
-            'notification_token' => 'nullable|string', // Menambahkan validasi untuk notification_token
+            'notification_token' => 'nullable|string',  
         ]);
 
         $user = Admin::where('email', $request->email)->first();
