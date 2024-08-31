@@ -240,10 +240,10 @@ public function getAllUsers()
 
         // Jika user memiliki profile_picture, buat URL lengkapnya
         if ($user->profile_picture) {
-            $user->profile_picture = asset('storage/' . $user->profile_picture);
+            $imagePath = basename($user->profile_picture);
+            $user->profile_picture = asset('storage/profile_pictures/' . $imagePath);
         }
 
-        // Menambahkan total order ke dalam data user
         $user->total_orders = [
             'regular_clean' => $regularCleanCount,
             'deep_clean' => $deepCleanCount
@@ -256,5 +256,6 @@ public function getAllUsers()
         'users' => $users,
     ], 200);
 }
+
 
 }
