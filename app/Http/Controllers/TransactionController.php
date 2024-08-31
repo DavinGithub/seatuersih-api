@@ -124,9 +124,6 @@ class TransactionController extends Controller
         // Ambil semua transaksi bersama dengan informasi pengguna yang terkait dengan pembayaran
         $transactions = Transaction::with('payment.order.user')->get();
     
-        // Debug: Cek transaksi yang diambil
-        \Log::info('Transactions:', $transactions->toArray());
-    
         // Cek apakah ada transaksi
         if ($transactions->isEmpty()) {
             return response([
@@ -137,6 +134,11 @@ class TransactionController extends Controller
     
         // Menyusun data transaksi dengan informasi yang diperlukan
         $transactionData = $transactions->map(function ($transaction) {
+            // Pastikan relasi ada sebelum mengaksesnya
+            $payment = $transaction->payment;
+            $order = $payment ? $payment->order : null;
+            $user = $order ? $order->user : null;
+    
             return [
                 'transaction_id' => $transaction->id,
                 'order_id' => $transaction->order_id,
@@ -148,11 +150,11 @@ class TransactionController extends Controller
                 'payment_channel' => $transaction->payment_channel,
                 'description' => $transaction->description,
                 'paid_at' => $transaction->paid_at,
-                'user' => $transaction->payment->order->user ? [
-                    'user_id' => $transaction->payment->order->user->id,
-                    'name' => $transaction->payment->order->user->name,
-                    'email' => $transaction->payment->order->user->email,
-                    'phone' => $transaction->payment->order->user->phone,
+                'user' => $user ? [
+                    'user_id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'phone' => $user->phone,
                 ] : null,
             ];
         });
@@ -163,6 +165,7 @@ class TransactionController extends Controller
             'transactions' => $transactionData,
         ], 200);
     }
+    
     
 
 
