@@ -231,15 +231,24 @@ class UserController extends Controller
     ], 200);
 }
 
-    
 public function getAllUsers()
 {
- 
     $users = User::all()->map(function ($user) {
+        // Menghitung jumlah order berdasarkan tipe untuk setiap user
+        $regularCleanCount = $user->orders()->where('order_type', 'regular_clean')->count();
+        $deepCleanCount = $user->orders()->where('order_type', 'deep_clean')->count();
+
         // Jika user memiliki profile_picture, buat URL lengkapnya
         if ($user->profile_picture) {
             $user->profile_picture = asset('storage/' . $user->profile_picture);
         }
+
+        // Menambahkan total order ke dalam data user
+        $user->total_orders = [
+            'regular_clean' => $regularCleanCount,
+            'deep_clean' => $deepCleanCount
+        ];
+
         return $user;
     });
 
@@ -247,6 +256,5 @@ public function getAllUsers()
         'users' => $users,
     ], 200);
 }
-
 
 }

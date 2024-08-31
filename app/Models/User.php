@@ -40,4 +40,11 @@ class User extends Authenticatable
     return url('storage/profile_pictures/' . $this->profile_picture);
 }
 
+
+public function orders()
+{
+    return $this->hasMany(Order::class);
+}
+
+
 }
