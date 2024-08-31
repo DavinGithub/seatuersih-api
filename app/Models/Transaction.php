@@ -22,10 +22,12 @@ class Transaction extends Model
         'order_id'
     ];
 
-    public function payment()
+
+public function payment()
 {
-    return $this->belongsTo(Payment::class);
+    return $this->belongsTo(Payment::class, 'payment_id');
 }
+
 }
 
 
