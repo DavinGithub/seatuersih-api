@@ -9,7 +9,7 @@ Route::get('/', function () {
 });
 
 Route::get('/image/{filename}', function ($filename) {
-    $path = storage_path('app/profile_pictures/'.$filename);
+    $path = public_path('images/'.$filename);
 
     if (! File::exists($path)) {
         abort(404);
