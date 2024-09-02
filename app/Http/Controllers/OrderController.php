@@ -45,7 +45,7 @@ class OrderController extends Controller
 
         $this->firebaseService->sendToAdmin(
             'Pesanan Baru Masuk',
-            'Pesanan baru telah dibuat oleh ' . $order->user->name . '.',
+            'Seseorang Baru Saja Menambahkan Order',
             '',
             ['route' => '/transaction_page.screen', 'data' => $order->id]
         );
@@ -58,71 +58,78 @@ class OrderController extends Controller
 
     
     public function updateOrder(Request $request)
-{
-    $request->validate([
-        'id' => 'required|integer|exists:orders,id',
-        'detail_address' => 'sometimes|required|string|max:255',
-        'total_price' => 'sometimes|required|numeric',
-        'pickup_date' => 'sometimes|required|date',
-        'notes' => 'sometimes|nullable|string|max:255',
-        'order_status' => 'sometimes|nullable|string|in:pending,waiting_for_payment,in-progress,completed,decline,reviewed',
-        'kabupaten' => 'sometimes|required|string|max:255',
-        'kecamatan' => 'sometimes|required|string|max:255',
-        'decline_note' => 'sometimes|nullable|string|max:255',
-    ]);
-
-    $order = Order::find($request->id);
-    $previousStatus = $order->order_status;
-
-    $order->update($request->only([
-        'detail_address',
-        'total_price',
-        'pickup_date',
-        'notes',
-        'order_status',
-        'kabupaten',
-        'kecamatan',
-        'decline_note',
-    ]));
-
-    if ($order->wasChanged('order_status')) {
-        $user = $order->user;
-        $title = 'Pembaruan Pesanan';
-        $body = ''; // Inisialisasi body notifikasi
-        $imageUrl = 'https://example.com/image.jpg'; // Ganti dengan URL gambar Anda
-
-        // Tentukan pesan notifikasi berdasarkan perubahan status
-        if ($previousStatus === 'pending' && $order->order_status === 'waiting_for_payment') {
-            $body = 'Pesanan Anda sudah diterima. Harap lakukan pembayaran!';
-        } elseif ($previousStatus === 'waiting_for_payment' && $order->order_status === 'in-progress') {
-            $body = 'Pembayaran telah diterima. Pesanan Anda sedang diproses!';
-        } elseif ($previousStatus === 'in-progress' && $order->order_status === 'completed') {
-            $body = 'Pesanan Anda sudah selesai!';
-        } elseif ($previousStatus === 'completed' && $order->order_status === 'reviewed') {
-            // Ubah penggunaan sendNotification menjadi sendToAdmin
-            $this->firebaseService->sendToAdmin(
-                'Pesanan Direview',
-                'Pesanan dengan ID ' . $order->id . ' telah diberi review oleh ' . $user->name . '.',
-                '',
-                ['route' => '/transaction_page.screen', 'data' => $order->id]
-            );
-        } elseif ($previousStatus === 'pending' && $order->order_status === 'decline') {
-            $body = 'Maaf, pesanan Anda ditolak!';
+    {
+        $request->validate([
+            'id' => 'required|integer|exists:orders,id',
+            'detail_address' => 'sometimes|required|string|max:255',
+            'total_price' => 'sometimes|required|numeric',
+            'pickup_date' => 'sometimes|required|date',
+            'notes' => 'sometimes|nullable|string|max:255',
+            'order_status' => 'sometimes|nullable|string|in:pending,waiting_for_payment,in-progress,completed,decline,reviewed',
+            'kabupaten' => 'sometimes|required|string|max:255',
+            'kecamatan' => 'sometimes|required|string|max:255',
+            'decline_note' => 'sometimes|nullable|string|max:255',
+        ]);
+    
+        $order = Order::find($request->id);
+        $previousStatus = $order->order_status;
+    
+        $order->update($request->only([
+            'detail_address',
+            'total_price',
+            'pickup_date',
+            'notes',
+            'order_status',
+            'kabupaten',
+            'kecamatan',
+            'decline_note',
+        ]));
+    
+        if ($order->wasChanged('order_status')) {
+            $user = $order->user;
+            $title = 'Pembaruan Pesanan';
+            $body = ''; // Inisialisasi body notifikasi
+            $imageUrl = 'https://example.com/image.jpg'; // Ganti dengan URL gambar Anda
+    
+            // Tentukan pesan notifikasi berdasarkan perubahan status
+            if ($previousStatus === 'pending' && $order->order_status === 'waiting_for_payment') {
+                $body = 'Pesanan Anda sudah diterima. Harap lakukan pembayaran!';
+            } elseif ($previousStatus === 'waiting_for_payment' && $order->order_status === 'in-progress') {
+                $body = 'Pembayaran telah diterima. Pesanan Anda sedang diproses!';
+                
+                // Kirim notifikasi ke admin
+                $this->firebaseService->sendToAdmin(
+                    'Pesanan Telah Dibayar',
+                    'Pesanan Dengan ID ' . $order->id .  'telah dibayar, tolong di proses',
+                    '',
+                    ['route' => '/transaction_page.screen', 'data' => $order->id]
+                );
+            } elseif ($previousStatus === 'in-progress' && $order->order_status === 'completed') {
+                $body = 'Pesanan Anda sudah selesai!';
+            } elseif ($previousStatus === 'completed' && $order->order_status === 'reviewed') {
+                $this->firebaseService->sendToAdmin(
+                    'Pesanan Direview',
+                    'Pesanan telah diberi review oleh seseorang',
+                    '',
+                    ['route' => '/transaction_page.screen', 'data' => $order->id]
+                );
+            } elseif ($previousStatus === 'pending' && $order->order_status === 'decline') {
+                $body = 'Maaf, pesanan Anda ditolak!';
+            }
+    
+            if (!empty($body)) { // Kirim notifikasi jika ada pesan
+                $this->firebaseService->sendNotification($user->notification_token, $title, $body, $imageUrl);
+            }
         }
-
-        if (!empty($body)) { // Kirim notifikasi jika ada pesan
-            $firebaseService = new FirebaseService();
-            $firebaseService->sendNotification($user->notification_token, $title, $body, $imageUrl);
-        }
+    
+        $order->load('user');
+    
+        return response()->json([
+            'message' => 'Order updated successfully',
+            'order' => $order,
+        ], 200);
     }
-
-    $order->load('user');
-
-    return response()->json([
-        'message' => 'Order updated successfully',
-        'order' => $order,
-    ], 200);
-}
+    
 
     
 
