@@ -11,13 +11,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Menjalankan seeder untuk laundries
         $this->call(LaundrySeeder::class);
 
-        // Menjalankan seeder untuk kabupatens
         $this->call(KabupatenSeeder::class);
 
-        // Menjalankan seeder untuk kecamatans
         $this->call(KecamatanSeeder::class);
+
+        $this->call(BrandSeeder::class);
+
+        $this->call(AdminSeeder::class);
     }
 }

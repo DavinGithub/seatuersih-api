@@ -22,13 +22,15 @@ class Transaction extends Model
         'order_id'
     ];
 
+    // Relasi ke Payment
+    public function payment()
+    {
+        return $this->belongsTo(Payment::class, 'payment_id');
+    }
 
-public function payment()
-{
-    return $this->belongsTo(Payment::class, 'payment_id');
+    // Relasi ke Order
+    public function order()
+    {
+        return $this->belongsTo(Order::class, 'order_id');
+    }
 }
-
-}
-
-
-
