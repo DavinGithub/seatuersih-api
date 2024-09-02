@@ -18,11 +18,13 @@ return new class extends Migration
             $table->decimal('rating', 3, 1);
             $table->date('review_date');
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('laundry_id'); // Changed to laundry_id
+            $table->unsignedBigInteger('laundry_id');
+            $table->unsignedBigInteger('order_id');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('laundry_id')->references('id')->on('laundries')->onDelete('cascade'); // Added foreign key to laundries table
+            $table->foreign('laundry_id')->references('id')->on('laundries')->onDelete('cascade');
+            $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
         });
     }
 

@@ -26,6 +26,7 @@ class ReviewController extends Controller
             'rating' => $request->rating,
             'user_id' => $user->id,
             'laundry_id' => $request->laundry_id, 
+            'order_id' => $request->order_id, 
             'review_date' => now()
         ]);
 
@@ -39,7 +40,7 @@ class ReviewController extends Controller
         return response()->json([
             'message' => 'Review added successfully',
             'review' => $review,
-        ], 201);
+        ], 201);    
     }
 
     public function getAverageRating($laundryId)

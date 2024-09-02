@@ -15,7 +15,8 @@ class Review extends Model
         'rating',
         'user_id',
         'review_date',
-        'laundry_id'
+        'laundry_id',
+        'order_id'
     ];
 
     public function user()
@@ -26,5 +27,10 @@ class Review extends Model
     public function laundry()
     {
         return $this->belongsTo(Laundry::class);
+    }
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class);
     }
 }
