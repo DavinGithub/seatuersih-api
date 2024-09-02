@@ -31,7 +31,6 @@ class OrderController extends Controller
             'order_type' => $request->order_type,
             'order_number' => $nomor_pemesanan,
             'detail_address' => $request->detail_address,
-            'phone' => $request->phone,
             'total_price' => $request->total_price,
             'pickup_date' => $request->pickup_date,
             'notes' => $request->notes,
@@ -63,7 +62,6 @@ class OrderController extends Controller
     $request->validate([
         'id' => 'required|integer|exists:orders,id',
         'detail_address' => 'sometimes|required|string|max:255',
-        'phone' => 'sometimes|required|string|max:255',
         'total_price' => 'sometimes|required|numeric',
         'pickup_date' => 'sometimes|required|date',
         'notes' => 'sometimes|nullable|string|max:255',
@@ -78,7 +76,6 @@ class OrderController extends Controller
 
     $order->update($request->only([
         'detail_address',
-        'phone',
         'total_price',
         'pickup_date',
         'notes',

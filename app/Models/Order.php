@@ -13,7 +13,6 @@ class Order extends Model
         'order_type',
         'order_number',
         'detail_address',
-        'phone',
         'total_price',
         'pickup_date',
         'notes',
