@@ -123,8 +123,9 @@ class TransactionController extends Controller
                     'description' => $transaction->description,
                     'paid_at' => $transaction->paid_at,
                     'order_type' => $orderType,
+                            'payment_method_image' => $this->getPaymentMethodImage($transaction->payment_channel),
                 ],
-                'payment_method_image' => $this->getPaymentMethodImage($transaction->payment_channel),
+        
             ], 200);
         }
 
@@ -136,10 +137,8 @@ class TransactionController extends Controller
 
     public function getAllTransaction(Request $request)
     {
-        // Ambil semua transaksi bersama dengan informasi pengguna yang terkait dengan pembayaran
         $transactions = Transaction::with('payment.order.user')->get();
     
-        // Cek apakah ada transaksi
         if ($transactions->isEmpty()) {
             return response([
                 'status' => 'failed',
@@ -151,9 +150,8 @@ class TransactionController extends Controller
         $transactionData = $transactions->map(function ($transaction) {
             // Pastikan relasi ada sebelum mengaksesnya
             $payment = $transaction->payment;
-            $order = $payment ? $payment->order : null;
-            $user = $order ? $order->user : null;
-            $orderType = $order ? $order->order_type : null;
+               $order = Order::where('id', $transaction->order_id)->first();
+             $orderType = $order ? $order->order_type : null;
     
             return [
                 'transaction_id' => $transaction->id,
@@ -167,12 +165,6 @@ class TransactionController extends Controller
                 'description' => $transaction->description,
                 'paid_at' => $transaction->paid_at,
                 'order_type' => $orderType, 
-                'user' => $user ? [
-                    'user_id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'phone' => $user->phone,
-                ] : null,
                 'payment_method_image' => $this->getPaymentMethodImage($transaction->payment_channel),
             ];
         });
