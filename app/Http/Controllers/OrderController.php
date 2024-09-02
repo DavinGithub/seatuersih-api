@@ -45,7 +45,7 @@ class OrderController extends Controller
 
         $this->firebaseService->sendToAdmin(
             'Pesanan Baru Masuk',
-            'Pesanan baru telah dibuat oleh ' . $request->user()->name . '.',
+            'Pesanan baru telah dibuat oleh ' . $order->user->name . '.',
             '',
             ['route' => '/transaction_page.screen', 'data' => $order->id]
         );
