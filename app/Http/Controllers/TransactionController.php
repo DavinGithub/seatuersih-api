@@ -91,6 +91,7 @@ class TransactionController extends Controller
             'status' => 'success',
             'message' => 'Payment status updated and order moved to in-progress',
             'payment_status' => $payment->status,
+            'payment_method_image' => $this->getPaymentMethodImage($request->payment_channel),
         ], 200);
     }
 
@@ -107,6 +108,7 @@ class TransactionController extends Controller
                 'status' => 'success',
                 'message' => 'Get transaction successfully',
                 'transaction' => $transaction,
+                'payment_method_image' => $this->getPaymentMethodImage($transaction->payment_channel),
             ], 200);
         }
 
@@ -147,13 +149,14 @@ class TransactionController extends Controller
                 'payment_channel' => $transaction->payment_channel,
                 'description' => $transaction->description,
                 'paid_at' => $transaction->paid_at,
-                'order_type' => $order ? $order->order_type : null, // Menambahkan order_type
+                'order_type' => $order ? $order->order_type : null, 
                 'user' => $user ? [
                     'user_id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
                     'phone' => $user->phone,
                 ] : null,
+                'payment_method_image' => $this->getPaymentMethodImage($transaction->payment_channel),
             ];
         });
     
@@ -184,5 +187,26 @@ class TransactionController extends Controller
             'status' => 'failed',
             'message' => 'Transaction not found',
         ], 404);
+    }
+
+    private function getPaymentMethodImage($paymentChannel)
+    {
+        // Map metode pembayaran ke nama file gambar
+        $images = [
+            'DANA' => 'dana.svg',
+            'JENIUSPAY' => 'jeniuspay.svg',
+            'LINKAJA' => 'linkaja.svg',
+            'OVO' => 'ovo.svg',
+            'SHOPEEPAY' => 'shopeepay.svg',
+            // Tambahkan metode lain sesuai kebutuhan
+        ];
+
+        // Cek apakah metode pembayaran ada dalam map
+        if (array_key_exists($paymentChannel, $images)) {
+            return asset('payment/' . $images[$paymentChannel]);
+        }
+
+        // Jika tidak ada, kembalikan gambar default
+        return asset('payment/default.svg');
     }
 }
