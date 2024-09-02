@@ -30,7 +30,8 @@ return new class extends Migration
                 'waiting_for_payment',
                 'in-progress',
                 'completed',
-                'decline'
+                'decline',
+                'reviewed' 
             ])->default('pending');
             $table->timestamps();
 
