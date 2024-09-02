@@ -104,10 +104,26 @@ class TransactionController extends Controller
         $transaction = Transaction::where('order_id', $request->id)->first();
 
         if ($transaction != null) {
+            // Get order and its type
+            $order = Order::where('id', $transaction->order_id)->first();
+            $orderType = $order ? $order->order_type : null;
+
             return response([
                 'status' => 'success',
                 'message' => 'Get transaction successfully',
-                'transaction' => $transaction,
+                'transaction' => [
+                    'transaction_id' => $transaction->id,
+                    'order_id' => $transaction->order_id,
+                    'external_id' => $transaction->external_id,
+                    'payment_method' => $transaction->payment_method,
+                    'status' => $transaction->status,
+                    'amount' => $transaction->amount,
+                    'payment_id' => $transaction->payment_id,
+                    'payment_channel' => $transaction->payment_channel,
+                    'description' => $transaction->description,
+                    'paid_at' => $transaction->paid_at,
+                    'order_type' => $orderType,
+                ],
                 'payment_method_image' => $this->getPaymentMethodImage($transaction->payment_channel),
             ], 200);
         }
@@ -137,6 +153,7 @@ class TransactionController extends Controller
             $payment = $transaction->payment;
             $order = $payment ? $payment->order : null;
             $user = $order ? $order->user : null;
+            $orderType = $order ? $order->order_type : null;
     
             return [
                 'transaction_id' => $transaction->id,
@@ -149,7 +166,7 @@ class TransactionController extends Controller
                 'payment_channel' => $transaction->payment_channel,
                 'description' => $transaction->description,
                 'paid_at' => $transaction->paid_at,
-                'order_type' => $order ? $order->order_type : null, 
+                'order_type' => $orderType, 
                 'user' => $user ? [
                     'user_id' => $user->id,
                     'name' => $user->name,
