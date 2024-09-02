@@ -20,82 +20,79 @@ class TransactionController extends Controller
     }
 
     public function invoiceStatus(Request $request)
-{
-    $payment = Payment::where('external_id', $request->external_id)->first();
-    if ($payment == null) {
-        return response([
-            'status' => 'failed',
-            'message' => 'Payment not found',
-        ], 404);
-    }
+    {
+        $payment = Payment::where('external_id', $request->external_id)->first();
+        if ($payment == null) {
+            return response([
+                'status' => 'failed',
+                'message' => 'Payment not found',
+            ], 404);
+        }
 
-    $payment->status = strtolower($request->status);
-    $payment->save();
+        $payment->status = strtolower($request->status);
+        $payment->save();
 
-    // Update or create a transaction record
-    $transaction = Transaction::where('order_id', $payment->order_id)->first();
-    if ($transaction == null) {
-        $transaction = Transaction::create([
-            'external_id' => $request->external_id,
-            'payment_method' => $request->payment_method,
-            'status' => $request->status,
-            'amount' => $request->amount,
-            'payment_id' => $request->payment_id,
-            'payment_channel' => $request->payment_channel,
-            'description' => $request->description,
-            'paid_at' => Carbon::parse($request->paid_at),
-            'order_id' => $payment->order_id,
-        ]);
-    } else {
-        $transaction->update([
-            'external_id' => $request->external_id,
-            'payment_method' => $request->payment_method,
-            'status' => $request->status,
-            'amount' => $request->amount,
-            'payment_id' => $request->payment_id,
-            'payment_channel' => $request->payment_channel,
-            'description' => $request->description,
-            'paid_at' => Carbon::parse($request->paid_at),
-            'order_id' => $payment->order_id,
-        ]);
-    }
+        // Update or create a transaction record
+        $transaction = Transaction::where('order_id', $payment->order_id)->first();
+        if ($transaction == null) {
+            $transaction = Transaction::create([
+                'external_id' => $request->external_id,
+                'payment_method' => $request->payment_method,
+                'status' => $request->status,
+                'amount' => $request->amount,
+                'payment_id' => $request->payment_id,
+                'payment_channel' => $request->payment_channel,
+                'description' => $request->description,
+                'paid_at' => Carbon::parse($request->paid_at),
+                'order_id' => $payment->order_id,
+            ]);
+        } else {
+            $transaction->update([
+                'external_id' => $request->external_id,
+                'payment_method' => $request->payment_method,
+                'status' => $request->status,
+                'amount' => $request->amount,
+                'payment_id' => $request->payment_id,
+                'payment_channel' => $request->payment_channel,
+                'description' => $request->description,
+                'paid_at' => Carbon::parse($request->paid_at),
+                'order_id' => $payment->order_id,
+            ]);
+        }
 
-    // Check if the payment status is 'paid'
-    if (strtolower($request->status) == 'paid') {
-        $order = Order::where('id', $payment->order_id)->first();
-        if ($order != null && $order->order_status == 'waiting_for_payment') {
-            $order->order_status = 'in-progress';
-            $order->save();
+        // Check if the payment status is 'paid'
+        if (strtolower($request->status) == 'paid') {
+            $order = Order::where('id', $payment->order_id)->first();
+            if ($order != null && $order->order_status == 'waiting_for_payment') {
+                $order->order_status = 'in-progress';
+                $order->save();
 
-            // Send notifications
-            $this->firebaseService->sendNotification(
-                $payment->user->notification_token,
-                'Pembayaran Berhasil',
-                'Pembayaran untuk Order ID ' . $transaction->order_id . ' telah terbayarkan',
-                ''
-            );
-
-            $admins = User::where('role', 'admin')->get(); // Sesuaikan dengan struktur tabel Anda
-            foreach ($admins as $admin) {
+                // Send notifications
                 $this->firebaseService->sendNotification(
-                    $admin->notification_token,
+                    $payment->user->notification_token,
                     'Pembayaran Berhasil',
                     'Pembayaran untuk Order ID ' . $transaction->order_id . ' telah terbayarkan',
                     ''
                 );
+
+                $admins = User::where('role', 'admin')->get(); // Sesuaikan dengan struktur tabel Anda
+                foreach ($admins as $admin) {
+                    $this->firebaseService->sendNotification(
+                        $admin->notification_token,
+                        'Pembayaran Berhasil',
+                        'Pembayaran untuk Order ID ' . $transaction->order_id . ' telah terbayarkan',
+                        ''
+                    );
+                }
             }
         }
+
+        return response([
+            'status' => 'success',
+            'message' => 'Payment status updated and order moved to in-progress',
+            'payment_status' => $payment->status,
+        ], 200);
     }
-
-    return response([
-        'status' => 'success',
-        'message' => 'Payment status updated and order moved to in-progress',
-        'payment_status' => $payment->status,
-    ], 200);
-}
-
-
-
 
     public function getTransaction(Request $request)
     {
@@ -150,6 +147,7 @@ class TransactionController extends Controller
                 'payment_channel' => $transaction->payment_channel,
                 'description' => $transaction->description,
                 'paid_at' => $transaction->paid_at,
+                'order_type' => $order ? $order->order_type : null, // Menambahkan order_type
                 'user' => $user ? [
                     'user_id' => $user->id,
                     'name' => $user->name,
@@ -165,9 +163,6 @@ class TransactionController extends Controller
             'transactions' => $transactionData,
         ], 200);
     }
-    
-    
-
 
     public function deleteTransaction(Request $request)
     {
