@@ -200,17 +200,14 @@ class TransactionController extends Controller
 
     private function getPaymentMethodImage($paymentChannel)
     {
-        // Map metode pembayaran ke nama file gambar
         $images = [
             'DANA' => 'dana.svg',
             'JENIUSPAY' => 'jeniuspay.svg',
             'LINKAJA' => 'linkaja.svg',
             'OVO' => 'ovo.svg',
             'SHOPEEPAY' => 'shopeepay.svg',
-            // Tambahkan metode lain sesuai kebutuhan
         ];
 
-        // Cek apakah metode pembayaran ada dalam map
         if (array_key_exists($paymentChannel, $images)) {
             return asset('payment/' . $images[$paymentChannel]);
         }
