@@ -11,11 +11,5 @@ class Brand extends Model
 
     protected $fillable = [
         'name',
-        'order_id',
     ];
-
-    public function order()
-    {
-        return $this->belongsTo(Order::class);
-    }
 }
