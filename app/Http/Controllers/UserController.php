@@ -6,6 +6,7 @@ use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\LoginRequests;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 
@@ -25,7 +26,7 @@ class UserController extends Controller
     
         if ($request->hasFile('profile_picture')) {
             $imagePath = $request->file('profile_picture')->store('profile_pictures', 'public');
-            $userdata['profile_picture'] = asset('storage/' . $imagePath); // Simpan URL lengkap
+            $userdata['profile_picture'] = asset('storage/' . $imagePath); 
         }
     
         $user = User::create($userdata);
@@ -210,16 +211,17 @@ class UserController extends Controller
     $user->phone = $request->phone;
 
     if ($request->hasFile('profile_picture')) {
-        // Hapus gambar lama jika ada
+        // Delete old picture if exists
         if ($user->profile_picture) {
-            // Ambil path gambar dari URL
-            $oldImagePath = str_replace(asset('storage/') . '/', '', $user->profile_picture);
-            Storage::disk('public')->delete($oldImagePath);
+            $oldImagePath = public_path('images') . '/' . $user->profile_picture;
+            if (file_exists($oldImagePath)) {
+                unlink($oldImagePath);
+            }
         }
-
-        // Simpan gambar baru
-        $imagePath = $request->file('profile_picture')->store('profile_pictures', 'public');
-        $user->profile_picture = asset('storage/' . $imagePath);
+        $imageName = env('APP_URL') . time().'.'.$request->profile_picture->extension();
+        Log::info('Uploading picture profile: '.$imageName);
+        $request->profile_picture->move(public_path('images'), $imageName);
+        $user->profile_picture = $imageName;
     }
 
     $user->save();
@@ -238,7 +240,7 @@ public function getAllUsers()
         $regularCleanCount = $user->orders()->where('order_type', 'regular_clean')->count();
         $deepCleanCount = $user->orders()->where('order_type', 'deep_clean')->count();
 
-        // Jika user memiliki profile_picture, buat URL lengkapnya
+      
         if ($user->profile_picture) {
             $imagePath = basename($user->profile_picture);
             $user->profile_picture = asset('storage/profile_pictures/' . $imagePath);
