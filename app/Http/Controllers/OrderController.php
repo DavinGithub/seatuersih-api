@@ -24,9 +24,9 @@ class OrderController extends Controller
     {
         $date = date('YmdHis');
         $nomor_pemesanan = $request->user()->id . $date;
-    
+
         $orderStatus = $request->order_status ?? 'pending';
-    
+
         $order = Order::create([
             'order_type' => $request->order_type,
             'order_number' => $nomor_pemesanan,
@@ -40,23 +40,21 @@ class OrderController extends Controller
             'kabupaten' => $request->kabupaten,
             'kecamatan' => $request->kecamatan,
         ]);
-    
+
         $order->load('user');
-    
-        // Menambahkan route dengan user_id yang melakukan pemesanan
+
         $this->firebaseService->sendToAdmin(
             'Pesanan Baru Masuk',
             'Seseorang Baru Saja Menambahkan Order',
             '',
-            ['route' => "/transaction_page.screen/{$order->user_id}", 'data' => $order->id]
+            ['route' => '/transaction_page.screen', 'data' => $order->id]
         );
-    
+
         return response()->json([
             'message' => 'Order added successfully',
             'order' => $order,
         ], 201);
     }
-    
 
     
     public function updateOrder(Request $request)
