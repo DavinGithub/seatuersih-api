@@ -114,10 +114,11 @@ class OrderController extends Controller
                 );
             } elseif ($previousStatus === 'pending' && $order->order_status === 'decline') {
                 $body = 'Maaf, pesanan Anda ditolak!';
-                if ($request->decline_note) {
-                    $body .= ' ' . $request->decline_note; 
+                if (!empty($order->decline_note)) {
+                    $body .= ' ' . $order->decline_note; 
                 }
             }
+            
             
     
             if (!empty($body)) { 
