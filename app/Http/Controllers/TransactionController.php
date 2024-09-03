@@ -68,16 +68,16 @@ class TransactionController extends Controller
                 $order->save();
 
                 // Send notifications
-                $this->firebaseService->sendNotification(
+                $this->firebaseService->sendToAdmin(
                     $payment->user->notification_token,
                     'Pembayaran Berhasil',
                     'Pembayaran untuk Order ID ' . $transaction->order_id . ' telah terbayarkan',
                     ''
                 );
 
-                $admins = User::where('role', 'admin')->get(); // Sesuaikan dengan struktur tabel Anda
+                $admins = User::where('role', 'admin')->get();
                 foreach ($admins as $admin) {
-                    $this->firebaseService->sendNotification(
+                    $this->firebaseService->sendToAdmin(
                         $admin->notification_token,
                         'Pembayaran Berhasil',
                         'Pembayaran untuk Order ID ' . $transaction->order_id . ' telah terbayarkan',
