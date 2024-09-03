@@ -88,10 +88,9 @@ class OrderController extends Controller
         if ($order->wasChanged('order_status')) {
             $user = $order->user;
             $title = 'Pembaruan Pesanan';
-            $body = ''; // Inisialisasi body notifikasi
-            $imageUrl = 'https://example.com/image.jpg'; // Ganti dengan URL gambar Anda
+            $body = ''; 
+            $imageUrl = 'https://example.com/image.jpg';
     
-            // Tentukan pesan notifikasi berdasarkan perubahan status
             if ($previousStatus === 'pending' && $order->order_status === 'waiting_for_payment') {
                 $body = 'Pesanan Anda sudah diterima. Harap lakukan pembayaran!';
             } elseif ($previousStatus === 'waiting_for_payment' && $order->order_status === 'in-progress') {
@@ -115,9 +114,13 @@ class OrderController extends Controller
                 );
             } elseif ($previousStatus === 'pending' && $order->order_status === 'decline') {
                 $body = 'Maaf, pesanan Anda ditolak!';
+                if ($request->decline_note) {
+                    $body .= ' ' . $request->decline_note; 
+                }
             }
+            
     
-            if (!empty($body)) { // Kirim notifikasi jika ada pesan
+            if (!empty($body)) { 
                 $this->firebaseService->sendNotification($user->notification_token, $title, $body, $imageUrl);
             }
         }
@@ -198,7 +201,7 @@ class OrderController extends Controller
         $order->total_price = $totalPrice;
         $order->save();
     
-        $order->load('user'); // Eager loading user relationship
+        $order->load('user');
     
         return response()->json([
             'message' => 'Checkout success',
