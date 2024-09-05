@@ -63,26 +63,28 @@ class LaundryController extends Controller
 
 
     public function updateLaundry(Request $request, $id)
-    {
-        $request->validate([
-            'name' => 'sometimes|required|string|max:255', // Mengganti order_type dengan name
-            'description' => 'nullable|string|max:255',
-        ]);
+{
+    $request->validate([
+        'name' => 'sometimes|required|string|max:255',
+        'description' => 'nullable|string|max:255',
+        'price' => 'nullable|string|max:255', // Menambahkan validasi untuk price
+    ]);
 
-        $laundry = Laundry::find($id);
-        if (!$laundry) {
-            return response()->json([
-                'message' => 'Laundry not found',
-            ], 404);
-        }
-
-        $laundry->update($request->only(['name', 'description'])); // Mengganti order_type dengan name
-
+    $laundry = Laundry::find($id);
+    if (!$laundry) {
         return response()->json([
-            'message' => 'Laundry updated successfully',
-            'laundry' => $laundry,
-        ], 200);
+            'message' => 'Laundry not found',
+        ], 404);
     }
+
+    $laundry->update($request->only(['name', 'description', 'price'])); // Mengupdate kolom termasuk price
+
+    return response()->json([
+        'message' => 'Laundry updated successfully',
+        'data' => $laundry,
+    ]);
+}
+
 
     public function deleteLaundry($id)
     {
