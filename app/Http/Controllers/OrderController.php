@@ -315,5 +315,29 @@ public function getChartByOrderType($orderType)
     return response()->json($formattedData);
 }
 
+    public function getTotalOrdersByType($orderType)
+    {
+        // Validasi input yang diterima hanya 'deep_clean' atau 'regular_clean'
+        if (!in_array($orderType, ['deep_clean', 'regular_clean'])) {
+            return response()->json([
+                'message' => 'Invalid order type',
+            ], 400);
+        }
 
-}
+        // Hitung total berdasarkan tipe order yang diinput dari URL
+        $totalOrders = Order::where('order_type', $orderType)->count();
+
+        // Menentukan pesan output berdasarkan tipe yang diinput
+        $message = 'Total orders for ' . str_replace('_', ' ', $orderType);
+
+        return response()->json([
+            'message' => $message,
+            'data' => [
+                $orderType => $totalOrders,
+            ],
+        ], 200);
+    }
+
+
+
+    }
