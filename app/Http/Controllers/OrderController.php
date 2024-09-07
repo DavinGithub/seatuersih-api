@@ -343,25 +343,42 @@ public function getChartByOrderType($orderType)
     $today = Carbon::today();
     $startOfMonth = Carbon::now()->startOfMonth();
 
-    $todayCount = Order::where('order_status', $status)
+    // Hitung dan ambil data order untuk hari ini
+    $todayOrders = Order::with('user')
+        ->where('order_status', $status)
         ->whereDate('created_at', $today)
-        ->count();
+        ->get();
 
-    $monthCount = Order::where('order_status', $status)
+    // Hitung dan ambil data order untuk bulan ini
+    $monthOrders = Order::with('user')
+        ->where('order_status', $status)
         ->whereBetween('created_at', [$startOfMonth, $today->endOfDay()])
-        ->count();
+        ->get();
 
-    $allCount = Order::where('order_status', $status)->count();
+    // Hitung dan ambil semua data order berdasarkan status
+    $allOrders = Order::with('user')
+        ->where('order_status', $status)
+        ->get();
 
     return response()->json([
         'message' => 'Order counts for status: ' . $status,
         'data' => [
-            'today' => $todayCount,
-            'month' => $monthCount,
-            'all' => $allCount,
+            'today' => [
+                'count' => $todayOrders->count(),
+                'orders' => $todayOrders,
+            ],
+            'month' => [
+                'count' => $monthOrders->count(),
+                'orders' => $monthOrders,
+            ],
+            'all' => [
+                'count' => $allOrders->count(),
+                'orders' => $allOrders,
+            ],
         ],
     ], 200);
 }
+
 
 
 
