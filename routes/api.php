@@ -69,6 +69,8 @@ Route::group(['prefix' => 'order', 'middleware' => 'auth:sanctum'], function () 
     Route::get('/charts', [OrderController::class, 'getChart']);
     Route::get('/chart/{orderType}', [OrderController::class, 'getChartByOrderType']);
     Route::get('/total/{orderType}', [OrderController::class, 'getTotalOrdersByType']);
+    Route::get('/count/{status}', [OrderController::class, 'getOrderCountsByStatus']);
+
 
 });
 

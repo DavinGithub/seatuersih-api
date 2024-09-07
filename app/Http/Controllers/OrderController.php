@@ -338,6 +338,31 @@ public function getChartByOrderType($orderType)
         ], 200);
     }
 
+    public function getOrderCountsByStatus($status)
+{
+    $today = Carbon::today();
+    $startOfMonth = Carbon::now()->startOfMonth();
+
+    $todayCount = Order::where('order_status', $status)
+        ->whereDate('created_at', $today)
+        ->count();
+
+    $monthCount = Order::where('order_status', $status)
+        ->whereBetween('created_at', [$startOfMonth, $today->endOfDay()])
+        ->count();
+
+    $allCount = Order::where('order_status', $status)->count();
+
+    return response()->json([
+        'message' => 'Order counts for status: ' . $status,
+        'data' => [
+            'today' => $todayCount,
+            'month' => $monthCount,
+            'all' => $allCount,
+        ],
+    ], 200);
+}
+
 
 
     }
