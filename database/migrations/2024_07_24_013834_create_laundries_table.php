@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('laundries', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('Description');
+            $table->string('description');
             $table->string('price')->nullable(); 
             $table->timestamps();
         }); 
