@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AddShoeRequest;
 use App\Models\Shoe;
 use App\Models\Order; // Import the Order model
+use App\Models\Brand; 
 use Illuminate\Http\Request;
 
 class ShoeController extends Controller
@@ -12,21 +13,30 @@ class ShoeController extends Controller
     public function addShoe(AddShoeRequest $request)
     {
         $request->validated();
-
+    
+        // Find or create the brand
+        $brand = Brand::firstOrCreate([
+            'brand' => $request->brand,
+        ]);
+    
+        // Increase the count
+        $brand->increment('count');
+    
         $shoe = Shoe::create([
             'brand' => $request->brand,
             'addons' => $request->addons,
-            'notes' =>  $request-> notes,
-            'price' => $request -> price,
+            'notes' => $request->notes,
+            'price' => $request->price,
             'order_id' => $request->order_id,
-
         ]);
-
+    
         return response()->json([
             'message' => 'Shoe added successfully',
             'shoe' => $shoe,
         ], 201);
     }
+    
+
 
     public function updateShoe(Request $request)
     {

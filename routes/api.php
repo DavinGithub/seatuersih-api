@@ -95,6 +95,7 @@ Route::group(['prefix' => 'brand', 'middleware' => 'auth:sanctum'], function () 
     Route::get('/getall', [BrandController::class, 'getBrands']);
     Route::get('/get/{id}', [BrandController::class, 'getBrand']);
     Route::get('/user/{userId}', [BrandController::class, 'getBrandsByUserId']);
+    Route::get('/total', [BrandController::class, 'getTotalBrands']);
 });
 
 Route::group(['prefix' => 'kabupaten', 'middleware' => 'auth:sanctum'], function () {
