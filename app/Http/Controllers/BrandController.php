@@ -106,4 +106,29 @@ class BrandController extends Controller
             'data' => $brands,
         ], 200);
     }
-}
+
+    public function getTotalBrands()
+    {
+        // Fetch all brands and their counts
+        $brandCounts = Brand::select('brand', 'count')
+            ->get();
+    
+        // Format output to match the requested structure
+        $formattedOutput = $brandCounts->mapWithKeys(function ($brand) {
+            return [$brand->brand => $brand->count];
+        });
+    
+        // Check if the formatted output is empty
+        if ($formattedOutput->isEmpty()) {
+            return response()->json([
+                'message' => 'No brands found',
+            ], 200);
+        }
+    
+        // Return the formatted output
+        return response()->json([
+            'message' => 'Total brands count',
+            'data' => $formattedOutput,
+        ], 200);
+    }
+}    

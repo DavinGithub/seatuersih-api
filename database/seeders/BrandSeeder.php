@@ -13,11 +13,12 @@ class BrandSeeder extends Seeder
     public function run(): void
     {
         DB::table('brands')->insert([
-            ['brand' => 'Adidas'],
-            ['brand' => 'Nike'],
-            ['brand' => 'Converse'],
-            ['brand' => 'Puma'],
-            ['brand' => 'Skechers'],
+            ['brand' => 'Adidas', 'count' => 0],
+            ['brand' => 'Nike', 'count' => 0],
+            ['brand' => 'Converse', 'count' => 0],
+            ['brand' => 'Puma', 'count' => 0],
+            ['brand' => 'Skechers', 'count' => 0],
         ]);
     }
 }
+
